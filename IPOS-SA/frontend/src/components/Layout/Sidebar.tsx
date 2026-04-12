@@ -3,6 +3,7 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard, BookOpen, ShoppingCart, FileText,
   Users, LogOut, ChevronDown, ChevronRight, AlertCircle, Globe, Bell,
+  BarChart2,
 } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import type { UserRole } from '@/types';
@@ -21,21 +22,21 @@ const NAV_ITEMS: NavItem[] = [
   {
     label:'Catalogue', icon:<BookOpen size={17} />, roles:['admin'],
     children:[
-      { label:'Browse Catalogue',  to:'/catalogue' },
-      { label:'Add Item',          to:'/catalogue/add' },
-      { label:'Low Stock Report',  to:'/catalogue/low-stock' },
+      { label:'Browse Catalogue', to:'/catalogue' },
+      { label:'Add Item',         to:'/catalogue/add' },
+      { label:'Low Stock Report', to:'/catalogue/low-stock' },
     ],
   },
   {
     label:'Orders', icon:<ShoppingCart size={17} />,
     children:[
-      { label:'All Orders',       to:'/orders' },
-      { label:'Place Order',      to:'/orders/new' },
-      { label:'Invoices',         to:'/orders/invoices' },
-      { label:'Merchant Balances',    to:'/orders/balance',            roles:['admin','manager','clerk'] },
-      { label:'Payment Records',      to:'/orders/payments',           roles:['admin','manager','clerk'] },
-      { label:'Debtor Reminders',     to:'/orders/reminders',          roles:['admin','manager'] },
-      { label:'Monthly Discounts',    to:'/orders/monthly-discounts',  roles:['admin','manager'] },
+      { label:'All Orders',        to:'/orders' },
+      { label:'Place Order',       to:'/orders/new' },
+      { label:'Invoices',          to:'/orders/invoices' },
+      { label:'Merchant Balances', to:'/orders/balance',           roles:['admin','manager','clerk'] },
+      { label:'Payment Records',   to:'/orders/payments',          roles:['admin','manager','clerk'] },
+      { label:'Debtor Reminders',  to:'/orders/reminders',         roles:['admin','manager'] },
+      { label:'Monthly Discounts', to:'/orders/monthly-discounts', roles:['admin','manager'] },
     ],
   },
   {
@@ -50,11 +51,12 @@ const NAV_ITEMS: NavItem[] = [
   {
     label:'Reports', icon:<FileText size={17} />, roles:['admin','manager'],
     children:[
-      { label:'Turnover Report',        to:'/reports/turnover' },
-      { label:'Merchant Summary',       to:'/reports/merchant-summary' },
-      { label:'Merchant Detailed',      to:'/reports/merchant-detailed' },
-      { label:'Stock Turnover',         to:'/reports/stock-turnover' },
-      { label:'Invoice Reports',        to:'/reports/invoices' },
+      { label:'Turnover Report',   to:'/reports/turnover' },
+      { label:'Merchant Summary',  to:'/reports/merchant-summary' },
+      { label:'Merchant Detailed', to:'/reports/merchant-detailed' },
+      { label:'Stock Turnover',    to:'/reports/stock-turnover' },
+      { label:'Invoice Reports',   to:'/reports/invoices' },
+      { label:'Analytics',         to:'/analytics' },
     ],
   },
 ];
@@ -70,8 +72,8 @@ function NavGroup({ item }: { item: NavItem }) {
           background:'none', border:'none', cursor:'pointer', color:'var(--color-sidebar-txt)',
           fontSize:'13px', fontFamily:'var(--font-ui)', fontWeight:500, borderRadius:'var(--radius-sm)',
           transition:'color .15s, background .15s', textAlign:'left' }}
-        onMouseEnter={e=>{ (e.currentTarget as HTMLButtonElement).style.color='#fff'; (e.currentTarget as HTMLButtonElement).style.background='rgba(255,255,255,.06)'; }}
-        onMouseLeave={e=>{ (e.currentTarget as HTMLButtonElement).style.color='var(--color-sidebar-txt)'; (e.currentTarget as HTMLButtonElement).style.background='none'; }}
+        onMouseEnter={(e)=>{ (e.currentTarget as HTMLButtonElement).style.color='#fff'; (e.currentTarget as HTMLButtonElement).style.background='rgba(255,255,255,.06)'; }}
+        onMouseLeave={(e)=>{ (e.currentTarget as HTMLButtonElement).style.color='var(--color-sidebar-txt)'; (e.currentTarget as HTMLButtonElement).style.background='none'; }}
       >
         <span style={{flexShrink:0}}>{item.icon}</span>
         <span style={{flex:1}}>{item.label}</span>
