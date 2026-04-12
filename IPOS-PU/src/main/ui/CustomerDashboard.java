@@ -114,7 +114,7 @@ public class CustomerDashboard extends JFrame {
             Product p = products.get(i);
             data[i][0] = p.getId();
             data[i][1] = p.getName();
-            data[i][2] = p.getType();
+            data[i][2] = p.getCategory();
             data[i][3] = p.getPrice();
             data[i][4] = p.getStock();
         }

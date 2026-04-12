@@ -34,8 +34,8 @@ public class CampaignsReport {
         StringBuilder sb = new StringBuilder();
         sb.append("IPOS-PU Campaigns Report\n");
         sb.append("Period: ").append(startDate).append(" to ").append(endDate).append("\n");
-        sb.append("Active campaigns: ").append(activeCampaignCount).append("\n");
-        sb.append("-".repeat(75)).append("\n");
+        sb.append(" Campaigns: ").append(activeCampaignCount).append("\n");
+        sb.append("-".repeat(100)).append("\n");
         for (CampaignReportItem campaign : campaigns) {
             sb.append(campaign).append("\n");
         }

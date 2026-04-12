@@ -30,7 +30,9 @@ public class SalesReportItem {
 
     @Override
     public String toString() {
-        return String.format("%-12s %-20s %6d   £%6.2f   £%8.2f", itemId, description, quantitySold, unitPrice, getLineTotal());
+        return String.format("%-12s %-40s %14d %14.2f %12.2f",
+                itemId, description, quantitySold, unitPrice, getLineTotal());
+//        return String.format("%-12s %-20s %6d   £%6.2f   £%8.2f", itemId, description, quantitySold, unitPrice, getLineTotal());
     }
 
     public int getQuantitySold() {

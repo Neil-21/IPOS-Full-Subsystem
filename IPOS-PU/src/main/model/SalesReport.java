@@ -43,12 +43,14 @@ public class SalesReport {
         StringBuilder sb = new StringBuilder();
         sb.append("IPOS-PU Sales Report\n");
         sb.append("Period: ").append(startDate).append(" to ").append(endDate).append("\n");
-        sb.append(String.format("%-12s %-20s %13s   %-12s %-10s%n", "Item ID", "Description", "Sold (packs)", "Unit Price £", "Total £"));
-        sb.append("-".repeat(75)).append("\n");
+//        sb.append(String.format("%-12s %-20s %13s   %-12s %-10s%n", "Item ID", "Description", "Sold (packs)", "Unit Price £", "Total £"));
+        sb.append(String.format("%-12s %-40s %14s %14s %12s%n",
+                "Item ID", "Description", "Sold (packs)", "Unit Price £", "Total £"));
+        sb.append("-".repeat(98)).append("\n");
         for (SalesReportItem item : items) {
             sb.append(item).append("\n");
         }
-        sb.append("-".repeat(75)).append("\n");
+        sb.append("-".repeat(98)).append("\n");
         sb.append(String.format("Total online sales for period: %d packs   £%.2f%n", totalUnitsSold, totalRevenue));
         return sb.toString();
     }

@@ -37,7 +37,7 @@ public class PasswordChange extends JDialog {
             }
 
             if (!authService.changePassword(user, newPassword)) {
-                JOptionPane.showMessageDialog(this, "Password must be at least 6 characters.");
+                JOptionPane.showMessageDialog(this, "Password must be at least 10 characters and must contain at least 1 number and 1 special character.");
                 return;
             }
 

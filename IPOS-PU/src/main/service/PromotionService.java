@@ -12,8 +12,10 @@ import java.util.List;
 
 public class PromotionService {
 
-    private static final DateTimeFormatter FORMATTER =
-            DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
+//    private static final DateTimeFormatter FORMATTER =
+//            DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
+
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
 
     // To create campaigns
 
@@ -46,6 +48,30 @@ public class PromotionService {
                     ps.setString(1, campaign.getCampaignId());
                     ps.setString(2, item.getItemId());
                     ps.setDouble(3, item.getDiscountRate());
+                    ps.addBatch();
+                }
+                ps.executeBatch();
+            }
+
+            String insertCampaignMetrics = """
+    INSERT INTO campaign_metrics (campaign_id, campaign_hits)
+    VALUES (?, 0)
+""";
+
+            try (PreparedStatement ps = conn.prepareStatement(insertCampaignMetrics)) {
+                ps.setString(1, campaign.getCampaignId());
+                ps.executeUpdate();
+            }
+
+            String insertItemMetrics = """
+                INSERT INTO campaign_item_metrics (campaign_id, item_id, item_hits, item_purchases)
+                VALUES (?, ?, 0, 0)
+            """;
+
+            try (PreparedStatement ps = conn.prepareStatement(insertItemMetrics)) {
+                for (CampaignItem item : campaign.getItems()) {
+                    ps.setString(1, campaign.getCampaignId());
+                    ps.setString(2, item.getItemId());
                     ps.addBatch();
                 }
                 ps.executeBatch();
@@ -183,11 +209,26 @@ public class PromotionService {
     public boolean deleteCampaign(String campaignId) {
         if (campaignId == null || campaignId.trim().isEmpty()) return false;
 
+//        String deleteItems = "DELETE FROM campaign_items WHERE campaign_id = ?";
+//        String deleteCampaign = "DELETE FROM campaigns WHERE campaign_id = ?";
+
+        String deleteItemMetrics = "DELETE FROM campaign_item_metrics WHERE campaign_id = ?";
+        String deleteCampaignMetrics = "DELETE FROM campaign_metrics WHERE campaign_id = ?";
         String deleteItems = "DELETE FROM campaign_items WHERE campaign_id = ?";
         String deleteCampaign = "DELETE FROM campaigns WHERE campaign_id = ?";
 
         try (Connection conn = DatabaseManager.getConnection()) {
             conn.setAutoCommit(false);
+
+            try (PreparedStatement ps = conn.prepareStatement(deleteItemMetrics)) {
+                ps.setString(1, campaignId.trim());
+                ps.executeUpdate();
+            }
+
+            try (PreparedStatement ps = conn.prepareStatement(deleteCampaignMetrics)) {
+                ps.setString(1, campaignId.trim());
+                ps.executeUpdate();
+            }
 
             try (PreparedStatement ps = conn.prepareStatement(deleteItems)) {
                 ps.setString(1, campaignId.trim());
@@ -207,6 +248,26 @@ public class PromotionService {
     }
 
     // Helpers
+
+    private LocalDateTime parseDateTimeFlexible(String value, boolean endOfDay) {
+        if (value == null || value.trim().isEmpty()) {
+            throw new IllegalArgumentException("Date value must not be null or empty.");
+        }
+
+        value = value.trim();
+
+        if (value.length() == 10) {
+            return endOfDay
+                    ? LocalDateTime.parse(value + "T23:59:00", FORMATTER)
+                    : LocalDateTime.parse(value + "T00:00:00", FORMATTER);
+        }
+
+        if (value.length() == 16) { // for yyyy-MM-ddTHH:mm
+            value = value + ":00";
+        }
+
+        return LocalDateTime.parse(value, FORMATTER);
+    }
 
     private boolean validateCampaign(Campaign campaign) {
         if (campaign.getCampaignId() == null || campaign.getCampaignId().trim().isEmpty()) return false;
@@ -228,8 +289,8 @@ public class PromotionService {
 
         return new Campaign(
                 id,
-                LocalDateTime.parse(rs.getString("start_date"), FORMATTER),
-                LocalDateTime.parse(rs.getString("end_date"), FORMATTER),
+                parseDateTimeFlexible(rs.getString("start_date"), false),
+                parseDateTimeFlexible(rs.getString("end_date"), true),
                 rs.getString("discount_type"),
                 items,
                 rs.getInt("cancelled") == 1
@@ -252,5 +313,98 @@ public class PromotionService {
             }
         }
         return items;
+    }
+
+    public void incrementCampaignHits(String campaignId) {
+        String sql = """
+            UPDATE campaign_metrics
+            SET campaign_hits = campaign_hits + 1
+            WHERE campaign_id = ?
+        """;
+
+        try (Connection conn = DatabaseManager.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, campaignId);
+            ps.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void incrementItemHits(String campaignId, String itemId, int quantity) {
+        String sql = """
+            UPDATE campaign_item_metrics
+            SET item_hits = item_hits + ?
+            WHERE campaign_id = ? AND item_id = ?
+        """;
+
+        try (Connection conn = DatabaseManager.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, quantity);
+            ps.setString(2, campaignId);
+            ps.setString(3, itemId);
+            ps.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void incrementItemPurchases(String campaignId, String itemId, int quantity) {
+        String sql = """
+            UPDATE campaign_item_metrics
+            SET item_purchases = item_purchases + ?
+            WHERE campaign_id = ? AND item_id = ?
+        """;
+
+        try (Connection conn = DatabaseManager.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, quantity);
+            ps.setString(2, campaignId);
+            ps.setString(3, itemId);
+            ps.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void ensureMetricsExistForAllCampaigns() {
+        List<Campaign> campaigns = getAllCampaigns();
+
+        String insertCampaignMetrics = """
+            INSERT OR IGNORE INTO campaign_metrics (campaign_id, campaign_hits)
+            VALUES (?, 0)
+        """;
+
+        String insertItemMetrics = """
+            INSERT OR IGNORE INTO campaign_item_metrics (campaign_id, item_id, item_hits, item_purchases)
+            VALUES (?, ?, 0, 0)
+        """;
+
+        try (Connection conn = DatabaseManager.getConnection()) {
+            try (PreparedStatement campaignPs = conn.prepareStatement(insertCampaignMetrics);
+                 PreparedStatement itemPs = conn.prepareStatement(insertItemMetrics)) {
+
+                for (Campaign campaign : campaigns) {
+                    campaignPs.setString(1, campaign.getCampaignId());
+                    campaignPs.executeUpdate();
+
+                    for (CampaignItem item : campaign.getItems()) {
+                        itemPs.setString(1, campaign.getCampaignId());
+                        itemPs.setString(2, item.getItemId());
+                        itemPs.addBatch();
+                    }
+                }
+
+                itemPs.executeBatch();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }

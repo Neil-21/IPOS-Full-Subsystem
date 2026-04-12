@@ -38,9 +38,15 @@ public class CampaignReportItem {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append(String.format("%-10s %-20s %-20s %5d   %s%n", campaignId, startDateTime.toLocalDate(), endDateTime.toLocalDate(), getItemCount(), discountType ));
-        sb.append (" Sold\n");
-        sb.append(String.format("  %-12s %-20s %-10s %-12s %-10s%n", "ID", "Description", "Discount", "Items Sold", "Total Sales £"));
+        sb.append(String.format("%-15s %-14s %-14s %8d   %-15s%n",
+                campaignId,
+                startDateTime.toLocalDate(),
+                endDateTime.toLocalDate(),
+                getItemCount(),
+                discountType));
+        sb.append("  Sold\n");
+        sb.append(String.format("  %-12s %-40s %10s %12s %12s%n",
+                "ID", "Description", "Discount", "Items Sold", "Total Sales £"));
         for (CampaignSoldItem item : soldItems) {
             sb.append("  ").append(item).append("\n");
         }

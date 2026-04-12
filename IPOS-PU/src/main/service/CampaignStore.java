@@ -2,6 +2,7 @@ package main.service;
 
 import main.model.Campaign;
 
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,7 +12,10 @@ public class CampaignStore {
 
     public static void addCampaign(Campaign campaign) {
         if (campaign != null) {
-            campaigns.add(campaign);
+            Campaign existing = findById(campaign.getCampaignId());
+            if (existing == null) {
+                campaigns.add(campaign);
+            }
         }
     }
 
@@ -40,5 +44,14 @@ public class CampaignStore {
 
     public static boolean removeCampaign(String campaignId) {
         return campaigns.removeIf(c -> c.getCampaignId().equalsIgnoreCase(campaignId));
+    }
+
+    public static void clear() {
+        campaigns.clear();
+    }
+
+    public static void loadFromDatabase(PromotionService promotionService) {
+        campaigns.clear();
+        campaigns.addAll(promotionService.getAllCampaigns());
     }
 }

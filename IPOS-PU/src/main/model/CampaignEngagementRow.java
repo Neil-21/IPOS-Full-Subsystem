@@ -33,13 +33,27 @@ public class CampaignEngagementRow {
 
     public String getConversionRateFormatted() {
 
+        if ("Campaign".equalsIgnoreCase(counterId)) {
+            return "N/A";
+        }
+
         if (hitsCount == 0) return "N/A";
-        return String.format("%d / %d = %.2f (%.1f%%)", purchases, hitsCount, getConversionRate(), getConversionRate() * 100);
+
+        return String.format("%d / %d = %.2f (%.1f%%)",
+                purchases,
+                hitsCount,
+                getConversionRate(),
+                getConversionRate() * 100);
 
     }
 
     @Override
     public String toString() {
-        return String.format("%-15s %-25s %8d   %8s   %s", counterId, counterDescription, hitsCount, purchases == 0 ? "N/A" : String.valueOf(purchases), getConversionRateFormatted());
+        return String.format("%-15s %-42s %10d %12s %20s",
+                counterId,
+                counterDescription,
+                hitsCount,
+                "Campaign".equalsIgnoreCase(counterId) ? "N/A" : String.valueOf(purchases),
+                getConversionRateFormatted());
     }
 }

@@ -38,7 +38,8 @@ public class AuthService {
 
     public boolean changePassword(User user, String newPassword) {
         if (user == null || newPassword == null || newPassword.trim().isEmpty()) return false;
-        if (newPassword.length() < 6) return false;
+        if (!newPassword.matches("^(?=.*[A-Za-z])(?=.*\\d)(?=.*[^A-Za-z\\d]).{10,}$")) return false;
+        //        if (newPassword.length() < 6) return false;
 
         String sql = "UPDATE users SET password = ?, first_login = 0 WHERE email = ?";
 

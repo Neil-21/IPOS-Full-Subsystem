@@ -1,4 +1,8 @@
 package main.api;
 
-public class SAMerchantApplicationAPI {
+public interface SAMerchantApplicationAPI {
+
+    String submitMerchantApplication(String application);
+
+    String getApplicationStatus(String applicationId);
 }

@@ -43,9 +43,11 @@ public class CampaignEngagementReport {
         sb.append("Campaign Description: ").append(campaignDescription).append("\n");
         sb.append("Start Period: ").append(startDateTime.toLocalDate()).append("\n");
         sb.append("End Period: ").append(endDateTime.toLocalDate()).append("\n");
-        sb.append("-".repeat(85)).append("\n");
-        sb.append(String.format("%-15s %-25s %8s   %8s   %s%n", "Counter ID", "Counter Description", "Hits", "Purchases", "Conversion Rate"));
-        sb.append("-".repeat(85)).append("\n");
+        sb.append("-".repeat(105)).append("\n");
+//        sb.append(String.format("%-15s %-25s %8s   %8s   %s%n", "Counter ID", "Counter Description", "Hits", "Purchases", "Conversion Rate"));
+        sb.append(String.format("%-15s %-42s %10s %12s %20s%n",
+                "Counter ID", "Counter Description", "Hits", "Purchases", "Conversion Rate"));
+        sb.append("-".repeat(105)).append("\n");
         for (CampaignEngagementRow row : rows) {
             sb.append(row).append("\n");
         }

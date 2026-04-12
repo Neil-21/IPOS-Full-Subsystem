@@ -24,8 +24,9 @@ public class CampaignSoldItem {
     public int getItemsSold() { return itemsSold; }
     public double getTotalSales() { return totalSales; }
 
-    @Override 
+    @Override
     public String toString() {
-        return String.format("%-12s %-20s %6.0f%%   %6d   £%8.2f", itemId, description, discountRate, itemsSold, totalSales);
+        return String.format("%-12s %-40s %10.0f%% %12d %12.2f",
+                itemId, description, discountRate, itemsSold, totalSales);
     }
 }
