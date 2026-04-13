@@ -34,8 +34,10 @@ public class UserDAO {
     }
 
     public boolean insert(User user) throws SQLException {
-        String sql = "INSERT INTO users (username, password_hash, role, full_name, email) VALUES (?, ?, ?, ?, ?)";
-        try (PreparedStatement stmt = DatabaseManager.getConnection().prepareStatement(sql)) {
+        String sql = "INSERT INTO users (username, password_hash, role, full_name, email) " +
+                "VALUES (?, ?, ?, ?, ?)";
+        try (PreparedStatement stmt =
+                     DatabaseManager.getConnection().prepareStatement(sql)) {
             stmt.setString(1, user.getUsername());
             stmt.setString(2, user.getPasswordHash());
             stmt.setString(3, user.getRole());

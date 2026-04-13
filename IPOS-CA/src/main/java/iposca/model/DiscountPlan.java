@@ -6,71 +6,41 @@ import java.util.List;
 public class DiscountPlan {
     private int discountPlanID;
     private String planName;
-    private String planType; // FIXED or FLEXIBLE
-    private BigDecimal discountPercentage; // only used for fixed
+    private String planType;         // "FIXED" or "FLEXIBLE" (uppercase now)
+    private BigDecimal discountPercentage;
     private String description;
     private boolean isActive;
-    private List<FlexibleDiscountTier> tiers; // only populated for flexible plans
+    private List<FlexibleDiscountTier> tiers;
 
     public DiscountPlan() {}
 
-    public int getDiscountPlanID() {
-        return discountPlanID;
-    }
-    public void setDiscountPlanID(int discountPlanID) {
-        this.discountPlanID = discountPlanID;
-    }
+    public int getDiscountPlanID() { return discountPlanID; }
+    public void setDiscountPlanID(int id) { this.discountPlanID = id; }
 
-    public String getPlanName() {
-        return planName;
-    }
-    public void setPlanName(String planName) {
-        this.planName = planName;
-    }
+    public String getPlanName() { return planName; }
+    public void setPlanName(String planName) { this.planName = planName; }
 
-    public String getPlanType() {
-        return planType;
-    }
-    public void setPlanType(String planType) {
-        this.planType = planType;
-    }
+    public String getPlanType() { return planType; }
+    public void setPlanType(String planType) { this.planType = planType; }
 
-    public BigDecimal getDiscountPercentage() {
-        return discountPercentage;
-    }
-    public void setDiscountPercentage(BigDecimal discountPercentage) {
-        this.discountPercentage = discountPercentage;
-    }
+    public BigDecimal getDiscountPercentage() { return discountPercentage; }
+    public void setDiscountPercentage(BigDecimal d) { this.discountPercentage = d; }
 
-    public String getDescription() {
-        return description;
-    }
-    public void setDescription(String description) {
-        this.description = description;
-    }
+    public String getDescription() { return description; }
+    public void setDescription(String description) { this.description = description; }
 
-    public boolean isActive() {
-        return isActive;
-    }
-    public void setActive(boolean active) {
-        isActive = active;
-    }
+    public boolean isActive() { return isActive; }
+    public void setActive(boolean active) { isActive = active; }
 
-    public List<FlexibleDiscountTier> getTiers() {
-        return tiers;
-    }
-    public void setTiers(List<FlexibleDiscountTier> tiers) {
-        this.tiers = tiers;
-    }
+    public List<FlexibleDiscountTier> getTiers() { return tiers; }
+    public void setTiers(List<FlexibleDiscountTier> tiers) { this.tiers = tiers; }
 
-    // Calculates discount for a given purchase amount
     public BigDecimal calculateDiscount(BigDecimal purchaseAmount) {
-        if ("FIXED".equals(planType)) {
+        if ("FIXED".equals(planType) && discountPercentage != null) {
             return purchaseAmount.multiply(discountPercentage)
                     .divide(BigDecimal.valueOf(100));
         }
-        // Flexible: find the right tier
-        if (tiers != null) {
+        if ("FLEXIBLE".equals(planType) && tiers != null) {
             for (FlexibleDiscountTier tier : tiers) {
                 boolean aboveMin = purchaseAmount.compareTo(tier.getMinValue()) >= 0;
                 boolean belowMax = tier.getMaxValue() == null ||

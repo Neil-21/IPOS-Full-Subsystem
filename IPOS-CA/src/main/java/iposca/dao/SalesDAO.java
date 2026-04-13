@@ -18,9 +18,9 @@ public class SalesDAO {
             String saleSql = "INSERT INTO sales (sale_reference, customer_type, account_id, " +
                     "subtotal, discount_amount, vat_amount, total_amount, " +
                     "payment_method, payment_status, served_by, notes) " +
-                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-            int saleID;
-            try (PreparedStatement stmt = conn.prepareStatement(saleSql, Statement.RETURN_GENERATED_KEYS)) {
+                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING sale_id";
+            int saleId;
+            try (PreparedStatement stmt = conn.prepareStatement(saleSql)) {
                 stmt.setString(1, sale.getSaleReference());
                 stmt.setString(2, sale.getCustomerType());
                 stmt.setString(3, sale.getAccountID());
@@ -32,17 +32,17 @@ public class SalesDAO {
                 stmt.setString(9, sale.getPaymentStatus());
                 stmt.setInt(10, sale.getServedBy());
                 stmt.setString(11, sale.getNotes());
-                stmt.executeUpdate();
-                ResultSet keys = stmt.getGeneratedKeys();
-                keys.next();
-                saleID = keys.getInt(1);
+                ResultSet rs = stmt.executeQuery(); // executeQuery not executeUpdate for RETURNING
+                rs.next();
+                saleId = rs.getInt(1);
             }
 
-            String itemSql = "INSERT INTO sale_items (sale_id, product_id, quantity, unit_price, line_total) " +
+            String itemSql = "INSERT INTO sale_items " +
+                    "(sale_id, product_id, quantity, unit_price, line_total) " +
                     "VALUES (?, ?, ?, ?, ?)";
             try (PreparedStatement stmt = conn.prepareStatement(itemSql)) {
                 for (SaleItem item : items) {
-                    stmt.setInt(1, saleID);
+                    stmt.setInt(1, saleId);
                     stmt.setString(2, item.getProductID());
                     stmt.setInt(3, item.getQuantity());
                     stmt.setBigDecimal(4, item.getUnitPrice());
@@ -53,7 +53,7 @@ public class SalesDAO {
             }
 
             conn.commit();
-            return saleID;
+            return saleId;
         } catch (SQLException e) {
             conn.rollback();
             throw e;
@@ -93,7 +93,7 @@ public class SalesDAO {
 
     public List<Sale> getSalesToday() throws SQLException {
         List<Sale> list = new ArrayList<>();
-        String sql = "SELECT * FROM sales WHERE sale_date::date = CURRENT_DATE";
+        String sql = "SELECT * FROM sales WHERE DATE(sale_date) = CURRENT_DATE";
         try (Statement stmt = DatabaseManager.getConnection().createStatement()) {
             ResultSet rs = stmt.executeQuery(sql);
             while (rs.next()) list.add(mapRow(rs));

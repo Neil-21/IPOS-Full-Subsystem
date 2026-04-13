@@ -1,5 +1,6 @@
 package iposca;
 
+import iposca.dao.SAIntegrationDAO;
 import iposca.model.Sale;
 import iposca.model.StockItem;
 import iposca.service.AccountService;
@@ -83,6 +84,30 @@ public class DashController {
             lowStockItemNo.setText("--");
             pendingOrderNo.setText("--");
             supplierOrderNo.setText("--");
+        }
+
+        try {
+            SAIntegrationDAO saDAO = new SAIntegrationDAO();
+            String saStatus = saDAO.getCosymedAccountStatus();
+            double saBalance = saDAO.getCosymedBalance();
+
+            if ("SUSPENDED".equals(saStatus) || "IN_DEFAULT".equals(saStatus)) {
+                paymentReminder.setText(
+                        "⚠ Your InfoPharma account is " + saStatus +
+                                ". Outstanding balance: £" + String.format("%.2f", saBalance) +
+                                ". No new orders can be placed until payment is received.");
+                paymentReminder.setStyle("-fx-text-fill: red; -fx-font-weight: bold;");
+            } else if (saBalance > 0) {
+                paymentReminder.setText(
+                        "Outstanding balance with InfoPharma: £" +
+                                String.format("%.2f", saBalance));
+                paymentReminder.setStyle("-fx-text-fill: orange;");
+            } else {
+                paymentReminder.setText("No outstanding balance with InfoPharma.");
+                paymentReminder.setStyle("-fx-text-fill: green;");
+            }
+        } catch (Exception e) {
+            paymentReminder.setText("Could not retrieve SA account status.");
         }
     }
 

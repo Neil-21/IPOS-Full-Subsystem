@@ -257,7 +257,7 @@ CREATE TABLE IF NOT EXISTS account_holder_payments (
 -- Users — credentials kept in sync with SA (source of truth)
 DELETE FROM users WHERE username = 'sysdba';
 INSERT INTO users (username, password_hash, role, full_name, is_active) VALUES
-('Sysdba',    'London_weighting', 'Admin',      'System Administrator', TRUE),
+('sysdba',    'masterkey', 'Admin',      'System Administrator', TRUE),
 ('manager',   'Get_it_done',      'Manager',    'Operations Manager',   TRUE),
 ('accountant','Count_money',      'Pharmacist', 'Senior Accountant',    TRUE),
 ('clerk',     'Paperwork',        'Pharmacist', 'Accounts Clerk',       TRUE)
@@ -294,21 +294,21 @@ ON CONFLICT (account_id) DO NOTHING;
 
 -- Stock items
 INSERT INTO stock_items (product_id, product_name, unit_type, form, pack_size, wholesale_cost, retail_price, current_stock, reorder_level) VALUES
-('10000001', 'Paracetamol',           'box',    'Caps', 20, 0.10,  0.20,  121, 10),
-('10000002', 'Aspirin',               'box',    'Caps', 20, 0.50,  1.00,  201, 15),
-('10000003', 'Analgin',               'box',    'Caps', 10, 1.20,  2.40,  25,  10),
-('10000004', 'Celebrex, caps 100 mg', 'box',    'Caps', 10, 10.00, 20.00, 43,  10),
-('10000005', 'Celebrex, caps 200 mg', 'box',    'Caps', 10, 18.50, 37.00, 35,  5),
-('10000006', 'Retin-A Tretin, 30 g',  'box',    'Caps', 20, 25.00, 50.00, 28,  10),
-('10000007', 'Lipitor TB, 20 mg',     'box',    'Caps', 30, 15.50, 31.00, 10,  10),
-('10000008', 'Claritin CR, 60g',      'box',    'Caps', 20, 19.50, 39.00, 21,  10),
-('20000004', 'Iodine tincture',        'bottle', 'ml',  100, 0.30,  0.60,  35,  10),
-('20000005', 'Rhynol',                 'bottle', 'ml',  200, 2.50,  5.00,  14,  15),
-('30000001', 'Ospen',                  'box',    'Caps', 20, 10.50, 21.00, 78,  10),
-('30000002', 'Amopen',                 'box',    'Caps', 30, 15.00, 30.00, 90,  15),
-('40000001', 'Vitamin C',              'box',    'Caps', 30, 1.20,  2.40,  22,  15),
-('40000002', 'Vitamin B12',            'box',    'Caps', 30, 1.30,  2.60,  43,  15)
-ON CONFLICT (product_id) DO NOTHING;
+('100 00001', 'Paracetamol',           'box',    'Caps', 20, 0.10,  0.20,  121, 10),
+('100 00002', 'Aspirin',               'box',    'Caps', 20, 0.50,  1.00,  201, 15),
+('100 00003', 'Analgin',               'box',    'Caps', 10, 1.20,  2.40,  25,  10),
+('100 00004', 'Celebrex, caps 100 mg', 'box',    'Caps', 10, 10.00, 20.00, 43,  10),
+('100 00005', 'Celebrex, caps 200 mg', 'box',    'Caps', 10, 18.50, 37.00, 35,  5),
+('100 00006', 'Retin-A Tretin, 30 g',  'box',    'Caps', 20, 25.00, 50.00, 28,  10),
+('100 00007', 'Lipitor TB, 20 mg',     'box',    'Caps', 30, 15.50, 31.00, 10,  10),
+('100 00008', 'Claritin CR, 60g',      'box',    'Caps', 20, 19.50, 39.00, 21,  10),
+('200 00004', 'Iodine tincture',       'bottle', 'ml',  100, 0.30,  0.60,  35,  10),
+('200 00005', 'Rhynol',                'bottle', 'ml',  200, 2.50,  5.00,  14,  15),
+('300 00001', 'Ospen',                 'box',    'Caps', 20, 10.50, 21.00, 78,  10),
+('300 00002', 'Amopen',                'box',    'Caps', 30, 15.00, 30.00, 90,  15),
+('400 00001', 'Vitamin C',             'box',    'Caps', 30, 1.20,  2.40,  22,  15),
+('400 00002', 'Vitamin B12',           'box',    'Caps', 30, 1.30,  2.60,  43,  15)
+    ON CONFLICT (product_id) DO NOTHING;
 
 -- Default reminder templates
 INSERT INTO reminder_templates (template_type, subject, body_text) VALUES

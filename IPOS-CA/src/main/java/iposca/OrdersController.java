@@ -1,232 +1,411 @@
 package iposca;
 
+import iposca.dao.SAIntegrationDAO;
+import iposca.model.Order;
+import iposca.model.OrderItem;
+import iposca.model.StockItem;
+import iposca.service.OrderService;
+import iposca.service.StockService;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
-import javafx.scene.control.cell.PropertyValueFactory;
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class OrdersController {
 
     @FXML private TextField searchField;
     @FXML private TextField trackOrderField;
-    @FXML private javafx.scene.control.Label trackingInfoDisplay;
+    @FXML private Label trackingInfoDisplay;
 
-    @FXML private TableView<Product> supplierTable;
-    @FXML private TableColumn<Product, String> colProductName;
-    @FXML private TableColumn<Product, String> colSupplier;
-    @FXML private TableColumn<Product, Double> colUnitCost;
-    @FXML private TableColumn<Product, Integer> colPackSize;
+    @FXML private TableView<StockItem> supplierTable;
+    @FXML private TableColumn<StockItem, String> colProductName;
+    @FXML private TableColumn<StockItem, String> colSupplier;
+    @FXML private TableColumn<StockItem, Double> colUnitCost;
+    @FXML private TableColumn<StockItem, Integer> colPackSize;
 
-    @FXML private TableView<Product> cartTable;
-    @FXML private TableColumn<Product, String> colCartProductName;
-    @FXML private TableColumn<Product, Integer> colCartQty;
-    @FXML private TableColumn<Product, Double> colCartCost;
-    @FXML private TableColumn<Product, Double> colCartLineTotal;
+    @FXML private TableView<StockItem> cartTable;
+    @FXML private TableColumn<StockItem, String> colCartProductName;
+    @FXML private TableColumn<StockItem, Integer> colCartQty;
+    @FXML private TableColumn<StockItem, Double> colCartCost;
+    @FXML private TableColumn<StockItem, Double> colCartLineTotal;
 
-    @FXML private TableView<Order> historyTable;
-    @FXML private TableColumn<Order, String> colHistId;
-    @FXML private TableColumn<Order, String> colHistDate;
-    @FXML private TableColumn<Order, String> colHistStatus;
-    @FXML private TableColumn<Order, Double> colHistTotal;
+    @FXML private TableView<iposca.model.Order> historyTable;
+    @FXML private TableColumn<iposca.model.Order, String> colHistId;
+    @FXML private TableColumn<iposca.model.Order, String> colHistDate;
+    @FXML private TableColumn<iposca.model.Order, String> colHistStatus;
+    @FXML private TableColumn<iposca.model.Order, Double> colHistTotal;
 
-    private final ObservableList<Product> catalogueList = FXCollections.observableArrayList();
-    private final ObservableList<Product> cartList = FXCollections.observableArrayList();
-    private final ObservableList<Order> historyList = FXCollections.observableArrayList();
+    private final ObservableList<StockItem> catalogueList = FXCollections.observableArrayList();
+    private final ObservableList<StockItem> cartList = FXCollections.observableArrayList();
+    private final ObservableList<iposca.model.Order> historyList = FXCollections.observableArrayList();
+    private final Map<String, Integer> cartQuantities = new HashMap<>();
+    private final SAIntegrationDAO saDAO = new SAIntegrationDAO();
 
+    @FXML
+    private void initialize() {
+        setupCatalogueTable();
+        setupCartTable();
+        setupHistoryTable();
+        loadCatalogue();
+        loadOrderHistory();
+        setupSearch();
+    }
 
-    @FXML private void initialize() {
-        catalogueList.addAll(
-        new Product("Paracetamol 500mg", 2.50, 100, 10, "TestSupplier1", 50),
-        new Product("Ibuprofen 200mg", 3.99, 50, 5, "TestSupplier2", 100),
-        new Product("Amoxicillin", 15.00, 20, 10, "TestSupplier3", 100),
-        new Product("Ibuprofen 400mg", 5.99, 20, 15, "TestSupplier2", 10)
-        );
-
+    private void setupCatalogueTable() {
         colProductName.setCellValueFactory(new PropertyValueFactory<>("productName"));
-        colSupplier.setCellValueFactory(new PropertyValueFactory<>("supplier"));
-        colUnitCost.setCellValueFactory(new PropertyValueFactory<>("price"));
+        colSupplier.setCellValueFactory(cellData ->
+                new SimpleStringProperty("InfoPharma"));
+        colUnitCost.setCellValueFactory(cellData ->
+                new SimpleDoubleProperty(
+                        cellData.getValue().getWholesaleCost().doubleValue()).asObject());
         colPackSize.setCellValueFactory(new PropertyValueFactory<>("packSize"));
+        supplierTable.setItems(catalogueList);
+    }
 
+    private void setupCartTable() {
         colCartProductName.setCellValueFactory(new PropertyValueFactory<>("productName"));
-        colCartQty.setCellValueFactory(new PropertyValueFactory<>("qty"));
-        colCartCost.setCellValueFactory(new PropertyValueFactory<>("price"));
-
-        historyList.addAll(
-        new Order("ORD-101", "2026-04-01", "Delivered", 150.50, "Arrived April 3rd"),
-        new Order("ORD-102", "2026-04-05", "Pending", 85.00, "Expected April 8th"),
-        new Order("ORD-103", "2026-04-06", "Processing", 320.99, "Expected April 10th")
-        );
-
-        //calculation for line total using qty * unit cost
+        colCartQty.setCellValueFactory(cellData ->
+                new javafx.beans.property.SimpleObjectProperty<>(
+                        cartQuantities.getOrDefault(
+                                cellData.getValue().getProductID(), 1)));
+        colCartCost.setCellValueFactory(cellData ->
+                new SimpleDoubleProperty(
+                        cellData.getValue().getWholesaleCost().doubleValue()).asObject());
         colCartLineTotal.setCellValueFactory(cellData -> {
-            Product p = cellData.getValue();
-            return new SimpleDoubleProperty(p.getQty() * p.getPrice()).asObject();
+            StockItem item = cellData.getValue();
+            int qty = cartQuantities.getOrDefault(item.getProductID(), 1);
+            return new SimpleDoubleProperty(
+                    item.getWholesaleCost().doubleValue() * qty).asObject();
         });
-
-        FilteredList<Product> filteredData = new FilteredList<>(catalogueList, p -> true);
-        supplierTable.setItems(filteredData);
         cartTable.setItems(cartList);
+    }
 
-        if (searchField != null) {
-            searchField.textProperty().addListener((observable, oldValue, newValue) -> {
-                filteredData.setPredicate(product -> {
-                    if (newValue == null || newValue.isEmpty()) {
-                        return true;
+    private void setupHistoryTable() {
+        colHistId.setCellValueFactory(new PropertyValueFactory<>("orderReference"));
+        colHistDate.setCellValueFactory(cellData ->
+                new SimpleStringProperty(
+                        cellData.getValue().getOrderDate().toLocalDate().toString()));
+        colHistStatus.setCellValueFactory(new PropertyValueFactory<>("orderStatus"));
+        colHistTotal.setCellValueFactory(cellData ->
+                new SimpleDoubleProperty(
+                        cellData.getValue().getTotalAmount().doubleValue()).asObject());
+
+        // colour code status column
+        colHistStatus.setCellFactory(col -> new TableCell<>() {
+            @Override
+            protected void updateItem(String status, boolean empty) {
+                super.updateItem(status, empty);
+                if (empty || status == null) {
+                    setText(null); setStyle("");
+                } else {
+                    setText(status);
+                    switch (status) {
+                        case "Delivered"   -> setStyle("-fx-text-fill: green; -fx-font-weight: bold;");
+                        case "Dispatched"  -> setStyle("-fx-text-fill: blue;");
+                        case "Cancelled"   -> setStyle("-fx-text-fill: red;");
+                        default            -> setStyle("-fx-text-fill: orange;");
                     }
-                    String searchKeyword = newValue.toLowerCase();
-                    return product.getProductName().toLowerCase().contains(searchKeyword);
+                }
+            }
+        });
+        historyTable.setItems(historyList);
+    }
+
+    private void loadCatalogue() {
+        try {
+            List<String[]> saItems = saDAO.getAllCatalogue();
+            catalogueList.clear();
+
+            for (String[] row : saItems) {
+                StockItem item = new StockItem();
+                item.setProductID(row[0]);
+                item.setProductName(row[1]);
+                item.setUnitType(row[2]);
+                item.setForm(row[3]);
+                item.setPackSize(Integer.parseInt(row[4]));
+                item.setWholesaleCost(new java.math.BigDecimal(row[5]));
+                item.setRetailPrice(new java.math.BigDecimal(row[5]));
+                item.setCurrentStock(Integer.parseInt(row[6]));
+                catalogueList.add(item);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            showError("Could not load SA catalogue: " + e.getMessage());
+        }
+    }
+
+    private void loadOrderHistory() {
+        try {
+            List<String[]> saOrders = saDAO.getCosymedOrders();
+            historyList.clear();
+
+            for (String[] row : saOrders) {
+                iposca.model.Order o = new iposca.model.Order();
+                o.setOrderReference(row[0]);
+                o.setOrderStatus(row[3] != null ? row[3] : "Unknown");
+                try {
+                    o.setTotalAmount(new java.math.BigDecimal(row[2]));
+                } catch (Exception ignored) {
+                    o.setTotalAmount(java.math.BigDecimal.ZERO);
+                }
+                o.setCourier(row[6]);
+                o.setTrackingNumber(row[7]);
+                try {
+                    if (row[1] != null)
+                        o.setOrderDate(java.time.LocalDateTime.parse(
+                                row[1].replace(" ", "T").substring(0, 19)));
+                } catch (Exception ignored) {
+                    o.setOrderDate(java.time.LocalDateTime.now());
+                }
+                try {
+                    if (row[5] != null)
+                        o.setDeliveryDate(java.time.LocalDate.parse(row[5]));
+                    if (row[4] != null)
+                        o.setDispatchDate(java.time.LocalDate.parse(row[4]));
+                } catch (Exception ignored) {}
+                historyList.add(o);
+            }
+
+        } catch (Exception e) {
+            System.err.println("SA unreachable, loading local orders: " + e.getMessage());
+            try {
+                historyList.clear();
+                List<iposca.model.Order> localOrders = OrderService.getAllOrders();
+                historyList.setAll(localOrders);
+            } catch (Exception ex) {
+                historyList.clear();
+                System.err.println("Could not load local orders either: " + ex.getMessage());
+            }
+        }
+    }
+
+    private void setupSearch() {
+        FilteredList<StockItem> filteredData = new FilteredList<>(catalogueList, p -> true);
+        supplierTable.setItems(filteredData);
+        if (searchField != null) {
+            searchField.textProperty().addListener((obs, oldVal, newVal) -> {
+                filteredData.setPredicate(product -> {
+                    if (newVal == null || newVal.isEmpty()) return true;
+                    return product.getProductName().toLowerCase()
+                            .contains(newVal.toLowerCase());
                 });
             });
         }
-
-        colHistId.setCellValueFactory(new PropertyValueFactory<>("id"));
-        colHistDate.setCellValueFactory(new PropertyValueFactory<>("date"));
-        colHistStatus.setCellValueFactory(new PropertyValueFactory<>("status"));
-        colHistTotal.setCellValueFactory(new PropertyValueFactory<>("total"));
-
-        historyTable.setItems(historyList);
     }
 
     @FXML
     public void handleAddToCart() {
-        Product selected = supplierTable.getSelectionModel().getSelectedItem();
-
+        StockItem selected = supplierTable.getSelectionModel().getSelectedItem();
         if (selected == null) {
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setTitle("No Items Selected");
-            alert.setHeaderText(null);
-            alert.setContentText("Please select an item to add to the cart and try again");
-            alert.showAndWait();
+            showWarning("No item selected. Please select an item and try again.");
             return;
         }
 
-        Product existingInCart = cartList.stream()
-                .filter(p -> p.getProductName().equals(selected.getProductName()))
-                .findFirst()
-                .orElse(null);
-
-        if (existingInCart != null) {
-            existingInCart.setQty(existingInCart.getQty() + 1);
+        String pid = selected.getProductID();
+        if (cartQuantities.containsKey(pid)) {
+            cartQuantities.put(pid, cartQuantities.get(pid) + 1);
             cartTable.refresh();
         } else {
-            Product cartItem = new Product(
-                    selected.getProductName(),
-                    selected.getPrice(),
-                    selected.getStock(),
-                    selected.getThreshold(),
-                    selected.getSupplier(),
-                    selected.getPackSize()
-            );
-            cartItem.setQty(1);
-            cartList.add(cartItem);
+            cartQuantities.put(pid, 1);
+            cartList.add(selected);
         }
     }
 
     @FXML
     public void handleRemoveSelected() {
-        Product selectedProduct = cartTable.getSelectionModel().getSelectedItem();
-
-        if (selectedProduct == null) {
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setTitle("No Items Selected");
-            alert.setHeaderText(null);
-            alert.setContentText("Please select an item to remove and try again");
-            alert.showAndWait();
+        StockItem selected = cartTable.getSelectionModel().getSelectedItem();
+        if (selected == null) {
+            showWarning("No item selected. Please select an item to remove.");
             return;
         }
-        cartList.remove(selectedProduct);
+        String pid = selected.getProductID();
+        int qty = cartQuantities.getOrDefault(pid, 1);
+        if (qty > 1) {
+            cartQuantities.put(pid, qty - 1);
+            cartTable.refresh();
+        } else {
+            cartQuantities.remove(pid);
+            cartList.remove(selected);
+        }
     }
 
     @FXML
     public void handleCompleteOrder() {
         if (cartList.isEmpty()) {
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setTitle("Empty Cart");
-            alert.setHeaderText(null);
-            alert.setContentText("Your cart is empty. Please add items before completing the order.");
-            alert.showAndWait();
+            showWarning("Your cart is empty. Please add items before completing the order.");
             return;
         }
 
         Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
         confirm.setTitle("Confirm Order");
         confirm.setHeaderText("Place Supplier Order?");
-        confirm.setContentText("Confirm?");
+        confirm.setContentText("This will submit the order to InfoPharma. Confirm?");
 
-        java.util.Optional<javafx.scene.control.ButtonType> result = confirm.showAndWait();
+        confirm.showAndWait().ifPresent(response -> {
+            if (response == ButtonType.OK) {
+                try {
+                    List<OrderItem> items = new ArrayList<>();
+                    for (StockItem item : cartList) {
+                        int qty = cartQuantities.getOrDefault(item.getProductID(), 1);
+                        OrderItem oi = new OrderItem();
+                        oi.setItemID(item.getProductID());
+                        oi.setQuantity(qty);
+                        oi.setUnitCost(item.getWholesaleCost());
+                        oi.setTotalCost(item.getWholesaleCost()
+                                .multiply(BigDecimal.valueOf(qty)));
+                        items.add(oi);
+                    }
 
-        if (result.isPresent() && result.get() == javafx.scene.control.ButtonType.OK) {
-            cartList.clear();
-            Alert success = new Alert(Alert.AlertType.INFORMATION);
-            success.setTitle("Order Successful");
-            success.setHeaderText(null);
-            success.setContentText("Your order has been sent to the suppliers successfully");
-            success.showAndWait();
-        }
+                    String ref = OrderService.placeOrder(items);
+
+                    // clear cart
+                    cartList.clear();
+                    cartQuantities.clear();
+
+                    // reload history so new order appears
+                    loadOrderHistory();
+
+                    Alert success = new Alert(Alert.AlertType.INFORMATION);
+                    success.setTitle("Order Placed");
+                    success.setContentText(
+                            "Order submitted successfully.\nReference: " + ref);
+                    success.showAndWait();
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    showError("Could not place order: " + e.getMessage());
+                }
+            }
+        });
     }
 
     @FXML
     public void handleTrackOrder() {
         String inputId = trackOrderField.getText().trim();
-
         if (inputId.isEmpty()) {
-            Alert success = new Alert(Alert.AlertType.WARNING);
-            success.setTitle("No Order ID");
-            success.setHeaderText(null);
-            success.setContentText("No Order ID typed, please try again");
-            success.showAndWait();
+            showWarning("Please enter an Order ID to track.");
             return;
         }
 
-        Order foundOrder = historyList.stream()
-                .filter(o -> o.getId().equalsIgnoreCase(inputId))
-                .findFirst()
-                .orElse(null);
-
-        if (foundOrder != null) {
-            String info = String.format(
-                    "Order ID: %s\nStatus: %s\nExpected Delivery: %s",
-                    foundOrder.getId(),
-                    foundOrder.getStatus(),
-                    foundOrder.getExpectedDelivery()
-            );
-            trackingInfoDisplay.setText(info);
-        } else {
-            Alert success = new Alert(Alert.AlertType.WARNING);
-            success.setTitle("Couldn't find Order ID");
-            success.setHeaderText(null);
-            success.setContentText("Couldn't validate Order ID, please try again");
-            success.showAndWait();
+        try {
+            // queries SA directly for live status
+            String[] status = saDAO.getOrderStatus(inputId);
+            if (status != null) {
+                StringBuilder info = new StringBuilder();
+                info.append("Order ID: ").append(status[0]).append("\n");
+                info.append("Status: ").append(status[1]).append("\n");
+                if (status[2] != null)
+                    info.append("Dispatched: ").append(status[2]).append("\n");
+                if (status[3] != null)
+                    info.append("Delivered: ").append(status[3]).append("\n");
+                if (status[4] != null)
+                    info.append("Courier: ").append(status[4]).append("\n");
+                if (status[5] != null)
+                    info.append("Courier Ref: ").append(status[5]).append("\n");
+                if (status[6] != null)
+                    info.append("Expected: ").append(status[6]);
+                trackingInfoDisplay.setText(info.toString());
+            } else {
+                showWarning("No order found with ID: " + inputId);
+            }
+        } catch (Exception e) {
+            showError("Could not reach SA database: " + e.getMessage());
         }
     }
 
+    // called when a delivery physically arrives, increases local stock
     @FXML
-    public void home(MouseEvent event) throws IOException {
+    public void handleConfirmDelivery() {
+        iposca.model.Order selected = historyTable.getSelectionModel().getSelectedItem();
+        if (selected == null) {
+            showWarning("Please select an order from the history table to confirm delivery.");
+            return;
+        }
+        if (selected.getOrderStatus().equals("Delivered")) {
+            showWarning("This order has already been marked as delivered.");
+            return;
+        }
+
+        Dialog<ButtonType> dialog = new Dialog<>();
+        dialog.setTitle("Confirm Delivery");
+        dialog.setHeaderText("Confirm delivery for order: " + selected.getOrderReference());
+
+        TextField courierField = new TextField();
+        courierField.setPromptText("e.g. DHL");
+        TextField trackingField = new TextField();
+        trackingField.setPromptText("Tracking number");
+
+        javafx.scene.layout.GridPane grid = new javafx.scene.layout.GridPane();
+        grid.setHgap(10); grid.setVgap(10);
+        grid.setPadding(new javafx.geometry.Insets(20, 150, 10, 10));
+        grid.add(new Label("Courier:"), 0, 0);
+        grid.add(courierField, 1, 0);
+        grid.add(new Label("Tracking No:"), 0, 1);
+        grid.add(trackingField, 1, 1);
+        dialog.getDialogPane().setContent(grid);
+
+        ButtonType confirmType = new ButtonType("Confirm", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(confirmType, ButtonType.CANCEL);
+
+        dialog.showAndWait().ifPresent(response -> {
+            if (response == confirmType) {
+                try {
+                    boolean success = OrderService.confirmDelivery(
+                            selected.getOrderID(),
+                            courierField.getText().trim(),
+                            trackingField.getText().trim()
+                    );
+                    if (success) {
+                        loadOrderHistory();
+                        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                        alert.setTitle("Delivery Confirmed");
+                        alert.setContentText(
+                                "Delivery confirmed. Stock has been updated.");
+                        alert.showAndWait();
+                    }
+                } catch (Exception e) {
+                    showError("Could not confirm delivery: " + e.getMessage());
+                }
+            }
+        });
+    }
+
+    private void showError(String msg) {
+        Alert a = new Alert(Alert.AlertType.ERROR);
+        a.setContentText(msg); a.showAndWait();
+    }
+
+    private void showWarning(String msg) {
+        Alert a = new Alert(Alert.AlertType.WARNING);
+        a.setContentText(msg); a.showAndWait();
+    }
+
+    @FXML public void home(MouseEvent event) throws IOException {
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         Utils.switchScene(stage, "/loggedIn.fxml", "Logged In");
     }
-
-    @FXML
-    public void sales(MouseEvent event) throws IOException {
+    @FXML public void sales(MouseEvent event) throws IOException {
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         Utils.switchScene(stage, "/SalesCheckout.fxml", "SalesCheckout");
     }
-
-    @FXML
-    public void stock(MouseEvent event) throws IOException {
+    @FXML public void stock(MouseEvent event) throws IOException {
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         Utils.switchScene(stage, "/stock.fxml", "Stock");
     }
-
-    @FXML
-    public void customers(MouseEvent event) throws IOException {
+    @FXML public void customers(MouseEvent event) throws IOException {
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         Utils.switchScene(stage, "/Customers.fxml", "Account Holders");
     }

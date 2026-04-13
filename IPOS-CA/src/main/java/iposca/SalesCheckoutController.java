@@ -73,6 +73,7 @@ public class SalesCheckoutController {
 
     private void loadProductsFromDatabase() {
         try {
+            masterData.clear();
             List<StockItem> items = StockService.getAllStock();
             masterData.setAll(items);
             productTable.setItems(masterData);

@@ -11,7 +11,8 @@ public class DiscountPlanDAO {
 
     public DiscountPlan findByID(int discountPlanID) throws SQLException {
         String sql = "SELECT * FROM discount_plans WHERE discount_plan_id = ?";
-        try (PreparedStatement stmt = DatabaseManager.getConnection().prepareStatement(sql)) {
+        try (PreparedStatement stmt =
+                     DatabaseManager.getConnection().prepareStatement(sql)) {
             stmt.setInt(1, discountPlanID);
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
@@ -35,11 +36,14 @@ public class DiscountPlanDAO {
         return list;
     }
 
-    private List<FlexibleDiscountTier> getTiersForPlan(int discountPlanID) throws SQLException {
+    private List<FlexibleDiscountTier> getTiersForPlan(int planId) throws SQLException {
         List<FlexibleDiscountTier> tiers = new ArrayList<>();
-        String sql = "SELECT * FROM discount_tiers WHERE discount_plan_id = ? ORDER BY min_value";
-        try (PreparedStatement stmt = DatabaseManager.getConnection().prepareStatement(sql)) {
-            stmt.setInt(1, discountPlanID);
+        // note: table is discount_tiers (not flexible_discount_tiers)
+        String sql = "SELECT * FROM discount_tiers " +
+                "WHERE discount_plan_id = ? ORDER BY min_value";
+        try (PreparedStatement stmt =
+                     DatabaseManager.getConnection().prepareStatement(sql)) {
+            stmt.setInt(1, planId);
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
                 FlexibleDiscountTier tier = new FlexibleDiscountTier();

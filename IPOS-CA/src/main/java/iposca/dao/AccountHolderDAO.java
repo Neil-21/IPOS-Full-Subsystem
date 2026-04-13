@@ -2,30 +2,26 @@ package iposca.dao;
 
 import iposca.db.DatabaseManager;
 import iposca.model.AccountHolder;
-
-import java.math.BigDecimal;
 import java.sql.*;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 public class AccountHolderDAO {
 
-    public AccountHolder findByID(String accountID) throws SQLException {
+    public AccountHolder findByID(String accountId) throws SQLException {
         String sql = "SELECT * FROM account_holders WHERE account_id = ?";
-        try (PreparedStatement stmt = DatabaseManager.getConnection().prepareStatement(sql)){
-            stmt.setString(1, accountID);
+        try (PreparedStatement stmt =
+                     DatabaseManager.getConnection().prepareStatement(sql)) {
+            stmt.setString(1, accountId);
             ResultSet rs = stmt.executeQuery();
-            if (rs.next()) {
-                return mapRow(rs);
-            }
+            if (rs.next()) return mapRow(rs);
         }
         return null;
     }
 
-    public List<AccountHolder> getAll() throws SQLException{
+    public List<AccountHolder> getAll() throws SQLException {
         List<AccountHolder> list = new ArrayList<>();
-        String sql = "SELECT * FROM account_holders";
+        String sql = "SELECT * FROM account_holders ORDER BY full_name";
         try (Statement stmt = DatabaseManager.getConnection().createStatement()) {
             ResultSet rs = stmt.executeQuery(sql);
             while (rs.next()) list.add(mapRow(rs));
@@ -34,8 +30,13 @@ public class AccountHolderDAO {
     }
 
     public boolean insert(AccountHolder ah) throws SQLException {
-        String sql = "INSERT INTO account_holders (account_id, full_name, address, phone, email, credit_limit, discount_plan_id) VALUES (?, ?, ?, ?, ?, ?, ?";
-        try (PreparedStatement stmt = DatabaseManager.getConnection().prepareStatement(sql)) {
+        String sql = "INSERT INTO account_holders " +
+                "(account_id, full_name, address, phone, email, " +
+                "credit_limit, current_balance, account_status, discount_plan_id, " +
+                "status_1st_reminder, status_2nd_reminder) " +
+                "VALUES (?, ?, ?, ?, ?, ?, 0.00, 'Normal', ?, 'no_need', 'no_need')";
+        try (PreparedStatement stmt =
+                     DatabaseManager.getConnection().prepareStatement(sql)) {
             stmt.setString(1, ah.getAccountID());
             stmt.setString(2, ah.getFullName());
             stmt.setString(3, ah.getAddress());
@@ -47,60 +48,103 @@ public class AccountHolderDAO {
         }
     }
 
-    public boolean updateStatus(String accountID, String status) throws SQLException {
-        String sql = "UPDATE account_holders SET account_status = ? WHERE account_id = ?";
-        try (PreparedStatement stmt = DatabaseManager.getConnection().prepareStatement(sql)) {
-            stmt.setString(1, status);
-            stmt.setString(2, accountID);
+    public boolean update(AccountHolder ah) throws SQLException {
+        String sql = "UPDATE account_holders SET full_name=?, address=?, phone=?, " +
+                "email=?, credit_limit=?, discount_plan_id=? " +
+                "WHERE account_id=?";
+        try (PreparedStatement stmt =
+                     DatabaseManager.getConnection().prepareStatement(sql)) {
+            stmt.setString(1, ah.getFullName());
+            stmt.setString(2, ah.getAddress());
+            stmt.setString(3, ah.getPhone());
+            stmt.setString(4, ah.getEmail());
+            stmt.setBigDecimal(5, ah.getCreditLimit());
+            stmt.setObject(6, ah.getDiscountPlanID());
+            stmt.setString(7, ah.getAccountID());
             return stmt.executeUpdate() > 0;
         }
     }
 
-    public boolean updateReminderStatus(String accountID, String reminderType, String status) throws SQLException {
-        String col = reminderType.equals("1st") ? "status_1st_reminder" : "status_2nd_reminder";
+    public boolean delete(String accountId) throws SQLException {
+        String sql = "DELETE FROM account_holders WHERE account_id = ?";
+        try (PreparedStatement stmt =
+                     DatabaseManager.getConnection().prepareStatement(sql)) {
+            stmt.setString(1, accountId);
+            return stmt.executeUpdate() > 0;
+        }
+    }
+
+    public boolean updateStatus(String accountId, String status) throws SQLException {
+        String sql = "UPDATE account_holders SET account_status = ? " +
+                "WHERE account_id = ?";
+        try (PreparedStatement stmt =
+                     DatabaseManager.getConnection().prepareStatement(sql)) {
+            stmt.setString(1, status);
+            stmt.setString(2, accountId);
+            return stmt.executeUpdate() > 0;
+        }
+    }
+
+    public boolean updateReminderStatus(String accountId, String type,
+                                        String status) throws SQLException {
+        String col = "1st".equals(type)
+                ? "status_1st_reminder" : "status_2nd_reminder";
         String sql = "UPDATE account_holders SET " + col + " = ? WHERE account_id = ?";
-        try (PreparedStatement stmt = DatabaseManager.getConnection().prepareStatement(sql)) {
+        try (PreparedStatement stmt =
+                     DatabaseManager.getConnection().prepareStatement(sql)) {
             stmt.setString(1, status);
-            stmt.setString(2, accountID);
+            stmt.setString(2, accountId);
             return stmt.executeUpdate() > 0;
         }
     }
 
-    public List<AccountHolder> getAccountsWithReminderDue() throws SQLException {
-        List<AccountHolder> list = new ArrayList<>();
-        String sql = "SELECT * FROM account_holders WHERE status_1st_reminder = 'due' OR status_2nd_reminder = 'due'";
-        try (Statement stmt = DatabaseManager.getConnection().createStatement()) {
-            ResultSet rs = stmt.executeQuery(sql);
-            while (rs.next()) list.add(mapRow(rs));
+    public boolean setDate2ndReminder(String accountId,
+                                      java.time.LocalDate date) throws SQLException {
+        String sql = "UPDATE account_holders SET date_2nd_reminder = ? " +
+                "WHERE account_id = ?";
+        try (PreparedStatement stmt =
+                     DatabaseManager.getConnection().prepareStatement(sql)) {
+            stmt.setDate(1, Date.valueOf(date));
+            stmt.setString(2, accountId);
+            return stmt.executeUpdate() > 0;
         }
-        return list;
     }
 
-    public boolean addToBalance(String accountId, BigDecimal amount) throws SQLException {
-        String sql = "UPDATE account_holders SET current_balance = current_balance + ? WHERE account_id = ?";
-        try (PreparedStatement stmt = DatabaseManager.getConnection().prepareStatement(sql)) {
+    public boolean addToBalance(String accountId,
+                                java.math.BigDecimal amount) throws SQLException {
+        String sql = "UPDATE account_holders " +
+                "SET current_balance = current_balance + ? " +
+                "WHERE account_id = ?";
+        try (PreparedStatement stmt =
+                     DatabaseManager.getConnection().prepareStatement(sql)) {
             stmt.setBigDecimal(1, amount);
             stmt.setString(2, accountId);
             return stmt.executeUpdate() > 0;
         }
     }
 
-    public boolean updateBalance(String accountId, BigDecimal newBalance) throws SQLException {
-        String sql = "UPDATE account_holders SET current_balance = ? WHERE account_id = ?";
-        try (PreparedStatement stmt = DatabaseManager.getConnection().prepareStatement(sql)) {
+    public boolean updateBalance(String accountId,
+                                 java.math.BigDecimal newBalance) throws SQLException {
+        String sql = "UPDATE account_holders SET current_balance = ? " +
+                "WHERE account_id = ?";
+        try (PreparedStatement stmt =
+                     DatabaseManager.getConnection().prepareStatement(sql)) {
             stmt.setBigDecimal(1, newBalance);
             stmt.setString(2, accountId);
             return stmt.executeUpdate() > 0;
         }
     }
 
-    public boolean setDate2ndReminder(String accountId, LocalDate date) throws SQLException {
-        String sql = "UPDATE account_holders SET date_2nd_reminder = ? WHERE account_id = ?";
-        try (PreparedStatement stmt = DatabaseManager.getConnection().prepareStatement(sql)) {
-            stmt.setDate(1, Date.valueOf(date));
-            stmt.setString(2, accountId);
-            return stmt.executeUpdate() > 0;
+    public List<AccountHolder> getAccountsWithReminderDue() throws SQLException {
+        List<AccountHolder> list = new ArrayList<>();
+        String sql = "SELECT * FROM account_holders " +
+                "WHERE status_1st_reminder = 'due' " +
+                "OR status_2nd_reminder = 'due'";
+        try (Statement stmt = DatabaseManager.getConnection().createStatement()) {
+            ResultSet rs = stmt.executeQuery(sql);
+            while (rs.next()) list.add(mapRow(rs));
         }
+        return list;
     }
 
     private AccountHolder mapRow(ResultSet rs) throws SQLException {
