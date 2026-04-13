@@ -3,9 +3,10 @@ package iposca.service;
 import iposca.dao.OrderDAO;
 import iposca.dao.SAIntegrationDAO;
 import iposca.dao.StockDAO;
+import iposca.db.DatabaseManager;
 import iposca.model.Order;
 import iposca.model.OrderItem;
-import java.sql.SQLException;
+import java.sql.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -37,7 +38,7 @@ public class OrderService {
                         item.getUnitCost().toPlainString()
                 });
             }
-            saDAO.submitOrderToSA(saItems, order.getTotalAmount());
+            saDAO.submitOrderToSA(saItems, order.getTotalAmount(), order.getOrderReference());
         } catch (Exception e) {
             System.err.println("Warning: Could not submit to SA database: "
                     + e.getMessage());
@@ -65,9 +66,14 @@ public class OrderService {
         return orderDAO.getAll();
     }
 
-    private static String generateReference() {
-        return "CA-ORD-" + LocalDateTime.now()
-                .format(DateTimeFormatter.ofPattern("yyyyMMdd-HHmmss"));
+    private static String generateReference() throws SQLException {
+        String sql = "SELECT COUNT(*) FROM ca.orders_to_infopharma";
+        try (Statement stmt = DatabaseManager.getConnection().createStatement()) {
+            ResultSet rs = stmt.executeQuery(sql);
+            rs.next();
+            int count = rs.getInt(1) + 1;
+            return "CA" + String.format("%08d", count);
+        }
     }
 
     public static int getPendingOrderCount() throws SQLException {

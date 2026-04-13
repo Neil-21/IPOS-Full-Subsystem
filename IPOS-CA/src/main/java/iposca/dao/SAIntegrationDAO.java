@@ -60,23 +60,22 @@ public class SAIntegrationDAO {
     }
 
 
-    public String submitOrderToSA(List<String[]> items,
-                                  BigDecimal totalValue) throws SQLException {
+    public String submitOrderToSA(List<String[]> items, BigDecimal totalValue,
+                                  String orderId) throws SQLException {
         Connection conn = DatabaseManager.getConnection();
         conn.setAutoCommit(false);
         try {
-            String orderId = "CA-" + System.currentTimeMillis();
-
             String orderSql = "INSERT INTO public.orders " +
                     "(order_id, account_id, order_date, total_value, status, " +
-                    "discount_applied, payment_status) " +
-                    "VALUES (?, ?, NOW(), ?, 'SUBMITTED', 0.00, 'PENDING') " +
-                    "RETURNING order_id";
+                    "dispatched_by, dispatch_date, courier, courier_ref, " +
+                    "expected_delivery, delivery_date, discount_applied, payment_status) " +
+                    "VALUES (?, ?, NOW(), ?, 'ACCEPTED', " +
+                    "NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 'PENDING')";
             try (PreparedStatement stmt = conn.prepareStatement(orderSql)) {
                 stmt.setString(1, orderId);
                 stmt.setInt(2, COSYMED_SA_ACCOUNT_ID);
                 stmt.setBigDecimal(3, totalValue);
-                stmt.executeQuery();
+                stmt.executeUpdate();
             }
 
             String itemSql = "INSERT INTO public.order_items " +
@@ -99,7 +98,6 @@ public class SAIntegrationDAO {
 
             conn.commit();
             return orderId;
-
         } catch (SQLException e) {
             conn.rollback();
             throw e;

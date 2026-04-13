@@ -255,7 +255,7 @@ CREATE TABLE IF NOT EXISTS account_holder_payments (
 -- ─── SEED DATA ────────────────────────────────────────────────────────────────
 
 -- Users — credentials kept in sync with SA (source of truth)
-DELETE FROM users WHERE username = 'sysdba';
+
 INSERT INTO users (username, password_hash, role, full_name, is_active) VALUES
 ('sysdba',    'masterkey', 'Admin',      'System Administrator', TRUE),
 ('manager',   'Get_it_done',      'Manager',    'Operations Manager',   TRUE),
@@ -280,11 +280,19 @@ INSERT INTO discount_plans (plan_name, plan_type, description) VALUES
 ON CONFLICT DO NOTHING;
 
 -- Discount tiers for plan_id 2 (Variable Volume)
-INSERT INTO discount_tiers (discount_plan_id, min_value, max_value, discount_rate) VALUES
-(2, 0.00,   99.99,  0.00),
-(2, 100.00, 299.99, 1.00),
-(2, 300.00, NULL,   2.00)
-ON CONFLICT DO NOTHING;
+DELETE FROM ca.discount_tiers;
+
+INSERT INTO ca.discount_tiers (discount_plan_id, min_value, max_value, discount_rate)
+SELECT discount_plan_id, 0.00, 99.99, 0.00
+FROM ca.discount_plans WHERE plan_name = 'Variable Volume';
+
+INSERT INTO ca.discount_tiers (discount_plan_id, min_value, max_value, discount_rate)
+SELECT discount_plan_id, 100.00, 299.99, 1.00
+FROM ca.discount_plans WHERE plan_name = 'Variable Volume';
+
+INSERT INTO ca.discount_tiers (discount_plan_id, min_value, max_value, discount_rate)
+SELECT discount_plan_id, 300.00, NULL, 2.00
+FROM ca.discount_plans WHERE plan_name = 'Variable Volume';
 
 -- Account holders
 INSERT INTO account_holders (account_id, full_name, address, phone, credit_limit, current_balance, account_status, discount_plan_id) VALUES

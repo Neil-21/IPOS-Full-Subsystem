@@ -113,10 +113,11 @@ public class OrdersController {
                 } else {
                     setText(status);
                     switch (status) {
-                        case "Delivered"   -> setStyle("-fx-text-fill: green; -fx-font-weight: bold;");
-                        case "Dispatched"  -> setStyle("-fx-text-fill: blue;");
-                        case "Cancelled"   -> setStyle("-fx-text-fill: red;");
-                        default            -> setStyle("-fx-text-fill: orange;");
+                        case "DELIVERED"       -> setStyle("-fx-text-fill: green; -fx-font-weight: bold;");
+                        case "DISPATCHED"      -> setStyle("-fx-text-fill: blue;");
+                        case "BEING_PROCESSED" -> setStyle("-fx-text-fill: orange;");
+                        case "ACCEPTED"        -> setStyle("-fx-text-fill: purple;");
+                        default                -> setStyle("");
                     }
                 }
             }
@@ -334,7 +335,12 @@ public class OrdersController {
             showWarning("Please select an order from the history table to confirm delivery.");
             return;
         }
-        if (selected.getOrderStatus().equals("Delivered")) {
+        if (!"DISPATCHED".equals(selected.getOrderStatus())) {
+            showWarning("This order has not been dispatched yet. Current status: "
+                    + selected.getOrderStatus());
+            return;
+        }
+        if (selected.getOrderStatus().equals("DELIVERED")) {
             showWarning("This order has already been marked as delivered.");
             return;
         }
