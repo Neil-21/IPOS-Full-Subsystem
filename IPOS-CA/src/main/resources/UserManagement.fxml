@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.shape.Line?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane prefHeight="462.0" prefWidth="921.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="iposca.UserManagementController">
+   <children>
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#e3e3e3" height="380.0" layoutX="24.0" layoutY="71.0" stroke="BLACK" strokeType="INSIDE" width="889.0" />
+
+      <HBox layoutX="171.0" layoutY="17.0" spacing="10.0" />
+
+      <Label layoutX="40.0" layoutY="78.0" text="USER MANAGEMENT"><font><Font name="System Bold" size="17.0" /></font></Label>
+
+      <TextField fx:id="searchField" layoutX="37.0" layoutY="120.0" prefHeight="25.0" prefWidth="603.0" promptText="Search users...." />
+      <Button layoutX="649.0" layoutY="120.0" text="Add user" />
+      <Button layoutX="727.0" layoutY="120.0" text="Change role" />
+      <Button layoutX="820.0" layoutY="120.0" text="Delete User" />
+
+      <TableView fx:id="userTable" layoutX="37.0" layoutY="164.0" prefHeight="272.0" prefWidth="862.0">
+         <columns>
+            <TableColumn fx:id="colUsername" prefWidth="200.0" text="Username" />
+            <TableColumn fx:id="colRole" prefWidth="150.0" text="Role" />
+            <TableColumn fx:id="colFullName" prefWidth="344.0000305175781" text="Full Name" />
+            <TableColumn fx:id="colActive" prefWidth="169.99993896484375" text="Active" />
+         </columns>
+      </TableView>
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#e4e4e4" height="60.0" stroke="BLACK" strokeType="INSIDE" width="936.0" />
+      <Text layoutX="10.0" layoutY="31.0" strokeType="OUTSIDE" strokeWidth="0.0" text="InfoPharma IPOS-CA" wrappingWidth="141.13671875">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </Text>
+      <Text fill="#00000066" layoutX="10.0" layoutY="44.0" strokeType="OUTSIDE" strokeWidth="0.0" text="PHARMACY CLIENT APPLICATION" wrappingWidth="259.13671875">
+         <font>
+            <Font size="9.0" />
+         </font>
+      </Text>
+      <Line endX="-100.0" endY="58.0" layoutX="262.0" layoutY="2.0" startX="-100.0" startY="-1.0" />
+      <Button layoutX="174.0" layoutY="17.0" mnemonicParsing="false" onMouseClicked="#home" prefHeight="34.0" prefWidth="73.0" text="Home" />
+      <Button layoutX="259.0" layoutY="17.0" mnemonicParsing="false" onMouseClicked="#sales" prefHeight="34.0" prefWidth="73.0" text="Sales" />
+      <Button layoutX="343.0" layoutY="17.0" mnemonicParsing="false" onMouseClicked="#stock" prefHeight="34.0" prefWidth="73.0" text="Stock" />
+      <Button layoutX="428.0" layoutY="17.0" mnemonicParsing="false" onMouseClicked="#orders" prefHeight="34.0" prefWidth="73.0" text="Orders" />
+      <Button layoutX="514.0" layoutY="17.0" mnemonicParsing="false" onMouseClicked="#customers" prefHeight="34.0" prefWidth="73.0" text="Customers" />
+      <Button layoutX="600.0" layoutY="17.0" mnemonicParsing="false" onMouseClicked="#users" prefHeight="34.0" prefWidth="127.0" text="User Management">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font>
+      </Button>
+      <Button layoutX="736.0" layoutY="18.0" mnemonicParsing="false" onMouseClicked="#reports" prefHeight="34.0" prefWidth="73.0" text="Reports" />
+      <Button layoutX="822.0" layoutY="18.0" mnemonicParsing="false" onMouseClicked="#templates" prefHeight="34.0" prefWidth="73.0" text="Templates" />
+      <Line endX="756.0" layoutX="140.0" layoutY="104.0" startX="-100.0" />
+   </children>
+</AnchorPane>

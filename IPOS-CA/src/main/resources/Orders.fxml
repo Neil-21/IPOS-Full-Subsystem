@@ -121,8 +121,8 @@
       <Button layoutX="74.0" layoutY="663.0" mnemonicParsing="false" onAction="#handleCheckBalance" prefHeight="34.0" prefWidth="126.0" text="Check Balance" />
       <Button layoutX="267.0" layoutY="663.0" mnemonicParsing="false" onAction="#handleViewInvoice" prefHeight="34.0" prefWidth="102.0" text="View Invoice" />
       <Button layoutX="438.0" layoutY="663.0" mnemonicParsing="false" onAction="#handleConfirmDelivery" prefHeight="34.0" prefWidth="126.0" text="Confirm Delivery" />
-      <Button layoutX="593.0" layoutY="17.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="127.0" text="User Management" />
-      <Button layoutX="729.0" layoutY="18.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="73.0" text="Reports" />
-      <Button layoutX="815.0" layoutY="18.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="73.0" text="Templates" />
+      <Button layoutX="593.0" layoutY="17.0" mnemonicParsing="false" onMouseClicked="#users" prefHeight="34.0" prefWidth="127.0" text="User Management" />
+      <Button layoutX="729.0" layoutY="18.0" mnemonicParsing="false" onMouseClicked="#reports" prefHeight="34.0" prefWidth="73.0" text="Reports" />
+      <Button layoutX="815.0" layoutY="18.0" mnemonicParsing="false" onMouseClicked="#templates" prefHeight="34.0" prefWidth="73.0" text="Templates" />
    </children>
 </AnchorPane>

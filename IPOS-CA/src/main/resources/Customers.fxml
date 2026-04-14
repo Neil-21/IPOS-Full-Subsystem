@@ -93,9 +93,9 @@
       <Line endX="1072.0" layoutX="135.0" layoutY="463.0" startX="-100.0" />
       <Button layoutX="1074.0" layoutY="391.0" mnemonicParsing="false" onAction="#handleSetReminder" prefHeight="34.0" prefWidth="115.0" text="Send Reminder" />
       <Button layoutX="529.0" layoutY="631.0" mnemonicParsing="false" onAction="#handleGenerateReminders" prefHeight="34.0" prefWidth="176.0" text="Generate Payment Reminders" />
-      <Button layoutX="600.0" layoutY="17.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="127.0" text="User Management" />
-      <Button layoutX="736.0" layoutY="18.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="73.0" text="Reports" />
-      <Button layoutX="822.0" layoutY="18.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="73.0" text="Templates" />
+      <Button layoutX="600.0" layoutY="17.0" mnemonicParsing="false" onMouseClicked="#users" prefHeight="34.0" prefWidth="127.0" text="User Management" />
+      <Button layoutX="736.0" layoutY="18.0" mnemonicParsing="false" onMouseClicked="#reports" prefHeight="34.0" prefWidth="73.0" text="Reports" />
+      <Button layoutX="822.0" layoutY="18.0" mnemonicParsing="false" onMouseClicked="#templates" prefHeight="34.0" prefWidth="73.0" text="Templates" />
       <Button layoutX="1074.0" layoutY="297.0" mnemonicParsing="false" onAction="#handleRestoreAccount" prefHeight="34.0" prefWidth="115.0" text="Restore Account" />
       <Button layoutX="1074.0" layoutY="343.0" mnemonicParsing="false" onAction="#handleDeleteAccount" prefHeight="34.0" prefWidth="115.0" text="Delete Account" />
    </children>

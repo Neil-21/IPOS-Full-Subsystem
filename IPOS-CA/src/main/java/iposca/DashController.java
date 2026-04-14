@@ -196,4 +196,18 @@ public class DashController {
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         Utils.switchScene(stage, "/Customers.fxml", "Account Holders");
     }
+
+    @FXML public void users(MouseEvent event) throws IOException {
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        Utils.switchScene(stage, "/UserManagement.fxml", "User Management");
+    }
+
+    @FXML public void reports(MouseEvent event) throws IOException {
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        Utils.switchScene(stage, "/Reports.fxml", "Reports");
+    }
+    @FXML public void templates(MouseEvent event) throws IOException {
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        Utils.switchScene(stage, "/Templates.fxml", "Reminder Templates");
+    }
 }

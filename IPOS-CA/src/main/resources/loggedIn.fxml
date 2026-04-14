@@ -38,7 +38,7 @@
       <Button layoutX="256.0" layoutY="16.0" mnemonicParsing="false" onMouseClicked="#sales" prefHeight="34.0" prefWidth="73.0" text="Sales" />
       <Button layoutX="340.0" layoutY="16.0" mnemonicParsing="false" onMouseClicked="#stock" prefHeight="34.0" prefWidth="73.0" text="Stock" />
       <Button layoutX="425.0" layoutY="16.0" mnemonicParsing="false" onMouseClicked="#orders" prefHeight="34.0" prefWidth="73.0" text="Orders" />
-      <Button layoutX="511.0" layoutY="16.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="73.0" text="Customers" />
+      <Button layoutX="511.0" layoutY="16.0" mnemonicParsing="false" onMouseClicked="#customers" prefHeight="34.0" prefWidth="73.0" text="Customers" />
       <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#e3e3e300" height="44.0" layoutX="597.0" layoutY="102.0" stroke="BLACK" strokeType="INSIDE" width="617.0" />
       <Label layoutX="26.0" layoutY="107.0" prefHeight="17.0" prefWidth="334.0" text="Low Stock Warning">
          <font>
@@ -92,8 +92,8 @@
             <Font name="System Bold" size="12.0" />
          </font>
       </Label>
-      <Button layoutX="597.0" layoutY="16.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="127.0" text="User Management" />
-      <Button layoutX="733.0" layoutY="17.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="73.0" text="Reports" />
-      <Button layoutX="819.0" layoutY="17.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="73.0" text="Templates" />
+      <Button layoutX="597.0" layoutY="16.0" mnemonicParsing="false" onMouseClicked="#users" prefHeight="34.0" prefWidth="127.0" text="User Management" />
+      <Button layoutX="733.0" layoutY="17.0" mnemonicParsing="false" onMouseClicked="#reports" prefHeight="34.0" prefWidth="73.0" text="Reports" />
+      <Button layoutX="819.0" layoutY="17.0" mnemonicParsing="false" onMouseClicked="#templates" prefHeight="34.0" prefWidth="73.0" text="Templates" />
    </children>
 </AnchorPane>

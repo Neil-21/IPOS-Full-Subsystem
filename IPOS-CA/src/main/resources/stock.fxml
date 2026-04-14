@@ -77,8 +77,8 @@
          </font>
       </Label>
       <Button layoutX="297.0" layoutY="245.0" mnemonicParsing="false" onAction="#handleModifyStock" prefHeight="34.0" prefWidth="160.0" text="Modify Quantity" />
-      <Button layoutX="595.0" layoutY="17.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="127.0" text="User Management" />
-      <Button layoutX="731.0" layoutY="18.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="73.0" text="Reports" />
-      <Button layoutX="817.0" layoutY="18.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="73.0" text="Templates" />
+      <Button layoutX="595.0" layoutY="17.0" mnemonicParsing="false" onMouseClicked="#users" prefHeight="34.0" prefWidth="127.0" text="User Management" />
+      <Button layoutX="731.0" layoutY="18.0" mnemonicParsing="false" onMouseClicked="#reports" prefHeight="34.0" prefWidth="73.0" text="Reports" />
+      <Button layoutX="817.0" layoutY="18.0" mnemonicParsing="false" onMouseClicked="#templates" prefHeight="34.0" prefWidth="73.0" text="Templates" />
    </children>
 </AnchorPane>

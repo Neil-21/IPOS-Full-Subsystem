@@ -167,6 +167,7 @@ public class SalesCheckoutController {
                 completeSale("Credit", accountId, null, null, 0, 0);
             } else if (result.isPresent()) {
                 showError("Account ID is required for credit payments.");
+                //please check, currently flags when wrong account ID is being written
             }
         }
     }
@@ -275,5 +276,18 @@ public class SalesCheckoutController {
     @FXML public void customers(MouseEvent event) throws IOException {
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         Utils.switchScene(stage, "/Customers.fxml", "Account Holders");
+    }
+    @FXML public void reports(MouseEvent event) throws IOException {
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        Utils.switchScene(stage, "/Reports.fxml", "Reports");
+    }
+    @FXML
+    public void users(MouseEvent event) throws IOException {
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        Utils.switchScene(stage, "/UserManagement.fxml", "User Management");
+    }
+    @FXML public void templates(MouseEvent event) throws IOException {
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        Utils.switchScene(stage, "/Templates.fxml", "Reminder Templates");
     }
 }
