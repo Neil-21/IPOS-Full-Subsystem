@@ -382,9 +382,7 @@ public class CustomerController {
         });
     }
 
-    // generate reminders for all accounts that have one due, currently not implemented or used anywhere
-    //gonna comment out the function for now as it was causing me issues
-    /*@FXML
+    @FXML
     void handleGenerateReminders() {
         Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
         confirm.setTitle("Generate Reminders");
@@ -405,7 +403,6 @@ public class CustomerController {
             }
         });
     }
-*/
 
     // restore an In Default account to Normal, manager only
     @FXML
@@ -453,6 +450,12 @@ public class CustomerController {
                 }
             }
         });
+    }
+
+    @FXML
+    void handleSetReminder() {
+        //code for Send Reminder button. first choose a user, then apply the button effects
+        //to that selected user
     }
 
     private void deleteFromDAO(String accountId) throws Exception {

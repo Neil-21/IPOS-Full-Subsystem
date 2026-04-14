@@ -389,6 +389,16 @@ public class OrdersController {
         });
     }
 
+    @FXML
+    public void handleCheckBalance() {
+        //code for the check balance button goes here
+    }
+
+    @FXML
+    public void handleViewInvoice() {
+        //code for the view invoice button goes here
+    }
+
     private void showError(String msg) {
         Alert a = new Alert(Alert.AlertType.ERROR);
         a.setContentText(msg); a.showAndWait();

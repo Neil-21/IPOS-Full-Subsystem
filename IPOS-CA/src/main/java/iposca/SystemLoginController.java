@@ -32,13 +32,6 @@ public class SystemLoginController {
         }
     }
 
-    @FXML
-    void forgotPass(MouseEvent event) {
-        //add a forgot password field here,
-        // it should prompt the user to a new window in order for them to be able to add their ID (or any other form of proper identification)
-        //to request their password and update it to the database
-    }
-
     private void login() throws IOException {
 
         String username = userField.getText();

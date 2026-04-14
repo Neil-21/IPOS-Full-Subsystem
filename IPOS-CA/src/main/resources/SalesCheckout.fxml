@@ -38,7 +38,6 @@
             <Button layoutX="340.0" layoutY="17.0" mnemonicParsing="false" onMouseClicked="#stock" prefHeight="34.0" prefWidth="73.0" text="Stock" />
             <Button layoutX="425.0" layoutY="17.0" mnemonicParsing="false" onMouseClicked="#orders" prefHeight="34.0" prefWidth="73.0" text="Orders" />
             <Button layoutX="511.0" layoutY="17.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="73.0" text="Customers" />
-            <Button layoutX="597.0" layoutY="17.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="73.0" text="Settings" />
             <Line endX="1055.0" layoutX="137.0" layoutY="118.0" startX="-100.0" />
             <Label layoutX="41.0" layoutY="87.0" prefHeight="17.0" prefWidth="334.0" text="SALES / CHECKOUT">
                <font>
@@ -116,6 +115,9 @@
             <Text layoutX="1014.0" layoutY="464.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Please select one of the payment options below to complete payment" textAlignment="CENTER" wrappingWidth="132.0" />
             <Button layoutX="1064.0" layoutY="547.0" mnemonicParsing="false" onMouseClicked="#moveToPayment" text="OK" />
             <Label fx:id="validateCreditField" layoutX="315.0" layoutY="613.0" prefHeight="51.0" prefWidth="326.0" />
+            <Button layoutX="596.0" layoutY="17.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="127.0" text="User Management" />
+            <Button layoutX="732.0" layoutY="17.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="73.0" text="Reports" />
+            <Button layoutX="817.0" layoutY="17.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="73.0" text="Templates" />
          </children>
       </AnchorPane>
    </children>

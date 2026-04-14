@@ -155,12 +155,19 @@ public class SalesCheckoutController {
         } else if (method.equals(Enums.PaymentMethod.CASH.name())) {
             completeSale("Cash", null, null, null, 0, 0);
         } else if (method.equals(Enums.PaymentMethod.CREDITS.name())) {
-            String accountId = accountIDField != null ? accountIDField.getText().trim() : null;
-            if (accountId == null || accountId.isEmpty()) {
-                showError("Please enter the account holder ID for credit payment.");
-                return;
+            javafx.scene.control.TextInputDialog dialog = new javafx.scene.control.TextInputDialog();
+            dialog.setTitle("Credit Account Required");
+            dialog.setHeaderText("Payment Method: Credits");
+            dialog.setContentText("Please enter the Account Holder ID:");
+
+            java.util.Optional<String> result = dialog.showAndWait();
+
+            if (result.isPresent() && !result.get().trim().isEmpty()) {
+                String accountId = result.get().trim();
+                completeSale("Credit", accountId, null, null, 0, 0);
+            } else if (result.isPresent()) {
+                showError("Account ID is required for credit payments.");
             }
-            completeSale("Credit", accountId, null, null, 0, 0);
         }
     }
 
@@ -252,6 +259,7 @@ public class SalesCheckoutController {
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         Utils.switchScene(stage, "/loggedIn.fxml", "Logged In");
     }
+
     @FXML public void stock() throws IOException {
         Stage stage = (Stage) totalLabel.getScene().getWindow();
         java.net.URL fileUrl = getClass().getClassLoader().getResource("stock.fxml");

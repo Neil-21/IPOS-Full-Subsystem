@@ -35,7 +35,6 @@
       </Button>
       <Button layoutX="425.0" layoutY="17.0" mnemonicParsing="false" onMouseClicked="#orders" prefHeight="34.0" prefWidth="73.0" text="Orders" />
       <Button layoutX="511.0" layoutY="17.0" mnemonicParsing="false" onMouseClicked="#customers" prefHeight="34.0" prefWidth="73.0" text="Customers" />
-      <Button layoutX="597.0" layoutY="17.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="73.0" text="Settings" />
       <Line endX="1084.0" layoutX="127.0" layoutY="124.0" startX="-100.0" />
       <Label layoutX="31.0" layoutY="93.0" prefHeight="26.0" prefWidth="190.0" text="STOCK MANAGEMENT">
          <font>
@@ -77,5 +76,9 @@
             <Font size="11.0" />
          </font>
       </Label>
+      <Button layoutX="297.0" layoutY="245.0" mnemonicParsing="false" onAction="#handleModifyStock" prefHeight="34.0" prefWidth="160.0" text="Modify Quantity" />
+      <Button layoutX="595.0" layoutY="17.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="127.0" text="User Management" />
+      <Button layoutX="731.0" layoutY="18.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="73.0" text="Reports" />
+      <Button layoutX="817.0" layoutY="18.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="73.0" text="Templates" />
    </children>
 </AnchorPane>

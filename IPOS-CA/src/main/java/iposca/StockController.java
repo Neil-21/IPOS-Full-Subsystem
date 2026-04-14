@@ -12,6 +12,8 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
+
+import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
@@ -26,7 +28,6 @@ public class StockController {
     @FXML private TableColumn<StockItem, Integer> colThreshold;
     @FXML private TableColumn<StockItem, String> colStatus;
 
-    // changed from Product to StockItem
     private ObservableList<StockItem> stockList = FXCollections.observableArrayList();
 
     @FXML
@@ -207,6 +208,11 @@ public class StockController {
                 }
             }
         });
+    }
+
+    @FXML
+    void handleModifyStock() {
+        //add the code for the handle quantity button here
     }
 
     private void showError(String message) {
