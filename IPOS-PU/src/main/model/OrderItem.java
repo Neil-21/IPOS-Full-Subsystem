@@ -1,5 +1,7 @@
 package main.model;
 
+import main.model.Product;
+
 public class OrderItem {
    private Product product;
     private int quantity;
@@ -8,7 +10,8 @@ public class OrderItem {
     public OrderItem(Product product, int quantity) {
         this.product = product;
         this.quantity = quantity;
-        this.price = product.getPrice() * quantity;
+        this.price = product.getRetailPrice() * quantity;
+//        this.price = product.getPrice() * quantity;
     }
 
     public Product getProduct() {

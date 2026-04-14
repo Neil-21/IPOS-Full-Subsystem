@@ -6,6 +6,7 @@ import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestFactory;
 import tests.database.DatabaseManagerTest;
+import tests.implementation.CAOrderStatusAPIImplTest;
 import tests.implementation.PUCommsAPIImplTest;
 import tests.model.CampaignTest;
 import tests.service.AuthServiceTest;
@@ -46,6 +47,7 @@ public class AllTestsOrchestratorTest {
             OrderServiceTest.class,
             PromotionServiceTest.class,
             ReportServiceTest.class,
+            CAOrderStatusAPIImplTest.class,
             PUCommsAPIImplTest.class,
             CampaignTest.class,
             DatabaseManagerTest.class,

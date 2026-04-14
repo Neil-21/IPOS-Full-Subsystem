@@ -62,13 +62,28 @@ public class DatabaseManager {
 
         String productsTable = """
             CREATE TABLE IF NOT EXISTS products (
-                product_id    TEXT    PRIMARY KEY,
-                product_name  TEXT    NOT NULL,
-                category      TEXT    NOT NULL,
-                price         REAL    NOT NULL,
-                stock         INTEGER NOT NULL
+                product_id      TEXT    PRIMARY KEY,
+                product_name    TEXT    NOT NULL,
+                description     TEXT,
+                package_type    TEXT,
+                unit_type       TEXT,
+                pack_size       INTEGER,
+                wholesale_cost  REAL    NOT NULL,
+                retail_price    REAL    NOT NULL,
+                stock           INTEGER NOT NULL,
+                stock_limit     INTEGER NOT NULL
             );
         """;
+
+//        String productsTable = """
+//            CREATE TABLE IF NOT EXISTS products (
+//                product_id    TEXT    PRIMARY KEY,
+//                product_name  TEXT    NOT NULL,
+//                category      TEXT    NOT NULL,
+//                price         REAL    NOT NULL,
+//                stock         INTEGER NOT NULL
+//            );
+//        """;
 
         String ordersTable = """
             CREATE TABLE IF NOT EXISTS orders (
@@ -202,25 +217,56 @@ public class DatabaseManager {
                 conn.createStatement().execute("""
                     INSERT INTO users VALUES
                     ('customer@ipos.com', 'Test Customer', 'Test123!', 'CUSTOMER', 1),
-                    ('admin@ipos.com',    'System Admin',  'Admin123!', 'ADMIN',   0)
-                """);
+                    ('admin@ipos.com',    'System Admin',  'Admin123!', 'ADMIN',   0),
+                    ('sysdba', 'Administrator', 'masterkey', 'ADMIN', 0),
+                    ('manager', 'PU-Admin', 'GetPU_it_done', 'ADMIN', 0)
+                    """);
             }
         }
     }
+
 
     private static void seedProductsIfEmpty(Connection conn) throws SQLException {
         try (ResultSet rs = conn.createStatement()
                 .executeQuery("SELECT COUNT(*) FROM products")) {
             if (rs.getInt(1) == 0) {
                 conn.createStatement().execute("""
-                INSERT INTO products (product_id, product_name, category, price, stock) VALUES
-                ('PARA001', 'Paracetamol 500mg (16 tablets)', 'Pain relief', 2.99, 120),
-                ('IBU002', 'Ibuprofen 400mg (24 tablets)', 'Anti-inflammatory', 4.49, 85),
-                ('VIT003', 'Vitamin D3 1000IU (90 capsules)', 'Supplements', 6.99, 200),
-                ('ALL004', 'Allergy Relief (Cetirizine 10mg)', 'Antihistamine', 3.79, 45),
-                ('BAND005', 'Bandages & Plasters Pack', 'First Aid', 5.49, 30)
+                INSERT INTO products (
+                    product_id, product_name, description, package_type, unit_type,
+                    pack_size, wholesale_cost, retail_price, stock, stock_limit
+                ) VALUES
+                ('10000001', 'Paracetamol', 'Paracetamol', 'Box', 'Caps', 20, 0.10, 0.20, 121, 10),
+                ('10000002', 'Aspirin', 'Aspirin', 'Box', 'Caps', 20, 0.50, 1.00, 201, 15),
+                ('10000003', 'Analgin', 'Analgin', 'Box', 'Caps', 10, 1.20, 2.40, 25, 10),
+                ('10000004', 'Celebrex, caps 100 mg', 'Celebrex, caps 100 mg', 'Box', 'Caps', 10, 10.00, 20.00, 43, 10),
+                ('10000005', 'Celebrex, caps 200 mg', 'Celebrex, caps 200 mg', 'Box', 'Caps', 10, 18.50, 37.00, 35, 5),
+                ('10000006', 'Retin-A Tretin, 30 g', 'Retin-A Tretin, 30 g', 'Box', 'Caps', 20, 25.00, 50.00, 28, 10),
+                ('10000007', 'Lipitor TB, 20 mg', 'Lipitor TB, 20 mg', 'Box', 'Caps', 30, 15.50, 31.00, 10, 10),
+                ('10000008', 'Claritin CR, 60g', 'Claritin CR, 60g', 'Box', 'Caps', 20, 19.50, 39.00, 21, 10),
+                ('20000004', 'Iodine tincture', 'Iodine tincture', 'Bottle', 'Ml', 100, 0.30, 0.60, 35, 10),
+                ('20000005', 'Rhynol', 'Rhynol', 'Bottle', 'Ml', 200, 2.50, 5.00, 14, 15),
+                ('30000001', 'Ospen', 'Ospen', 'Box', 'Caps', 20, 10.50, 21.00, 78, 10),
+                ('30000002', 'Amopen', 'Amopen', 'Box', 'Caps', 30, 15.00, 30.00, 90, 15),
+                ('40000001', 'Vitamin C', 'Vitamin C', 'Box', 'Caps', 30, 1.20, 2.40, 22, 15),
+                ('40000002', 'Vitamin B12', 'Vitamin B12', 'Box', 'Caps', 30, 1.30, 2.60, 43, 15)
             """);
             }
         }
     }
+
+//    private static void seedProductsIfEmpty(Connection conn) throws SQLException {
+//        try (ResultSet rs = conn.createStatement()
+//                .executeQuery("SELECT COUNT(*) FROM products")) {
+//            if (rs.getInt(1) == 0) {
+//                conn.createStatement().execute("""
+//                INSERT INTO products (product_id, product_name, category, price, stock) VALUES
+//                ('PARA001', 'Paracetamol 500mg (16 tablets)', 'Pain relief', 2.99, 120),
+//                ('IBU002', 'Ibuprofen 400mg (24 tablets)', 'Anti-inflammatory', 4.49, 85),
+//                ('VIT003', 'Vitamin D3 1000IU (90 capsules)', 'Supplements', 6.99, 200),
+//                ('ALL004', 'Allergy Relief (Cetirizine 10mg)', 'Antihistamine', 3.79, 45),
+//                ('BAND005', 'Bandages & Plasters Pack', 'First Aid', 5.49, 30)
+//            """);
+//            }
+//        }
+//    }
 }

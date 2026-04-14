@@ -56,14 +56,36 @@ public class CatalogueServiceTest {
         for (Product product : products) {
             assertNotNull(product.getId());
             assertFalse(product.getId().trim().isEmpty());
+
             assertNotNull(product.getName());
             assertFalse(product.getName().trim().isEmpty());
-            assertNotNull(product.getCategory());
-            assertFalse(product.getCategory().trim().isEmpty());
-            assertTrue(product.getPrice() >= 0, "Price should not be negative.");
+            assertNotNull(product.getDescription());
+            assertFalse(product.getDescription().trim().isEmpty());
+            assertNotNull(product.getPackageType());
+            assertFalse(product.getPackageType().trim().isEmpty());
+            assertNotNull(product.getUnitType());
+            assertFalse(product.getUnitType().trim().isEmpty());
+            assertTrue(product.getPackSize() > 0, "Pack size should be greater than 0.");
+            assertTrue(product.getWholesaleCost() >= 0, "Wholesale cost should not be negative.");
+            assertTrue(product.getRetailPrice() >= 0, "Retail price should not be negative.");
             assertTrue(product.getStock() >= 0, "Stock should not be negative.");
+            assertTrue(product.getStockLimit() >= 0, "Stock limit should not be negative.");
         }
     }
+//    void testGetAllProducts_ProductFieldsAreValid() {
+//        List<Product> products = catalogueService.getAllProducts();
+//
+//        for (Product product : products) {
+//            assertNotNull(product.getId());
+//            assertFalse(product.getId().trim().isEmpty());
+//            assertNotNull(product.getName());
+//            assertFalse(product.getName().trim().isEmpty());
+//            assertNotNull(product.getCategory());
+//            assertFalse(product.getCategory().trim().isEmpty());
+//            assertTrue(product.getPrice() >= 0, "Price should not be negative.");
+//            assertTrue(product.getStock() >= 0, "Stock should not be negative.");
+//        }
+//    }
 
     // Expected: each call returns an independent list instance.
     @Test
