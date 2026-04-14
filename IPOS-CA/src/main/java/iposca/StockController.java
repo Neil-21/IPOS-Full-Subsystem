@@ -107,8 +107,24 @@ public class StockController {
 
         ComboBox<StockItem> productComboBox = new ComboBox<>(stockList);
         productComboBox.setPromptText("Select a product");
+        productComboBox.setPrefWidth(200);
         TextField thresholdField = new TextField();
         thresholdField.setPromptText("e.g. 10");
+
+        productComboBox.setCellFactory(lv -> new ListCell<>() {
+            @Override
+            protected void updateItem(StockItem item, boolean empty) {
+                super.updateItem(item, empty);
+                setText(empty || item == null ? null : item.getProductName());
+            }
+        });
+        productComboBox.setButtonCell(new ListCell<>() {
+            @Override
+            protected void updateItem(StockItem item, boolean empty) {
+                super.updateItem(item, empty);
+                setText(empty || item == null ? null : item.getProductName());
+            }
+        });
 
         javafx.scene.layout.GridPane grid = new javafx.scene.layout.GridPane();
         grid.setHgap(10); grid.setVgap(10);
