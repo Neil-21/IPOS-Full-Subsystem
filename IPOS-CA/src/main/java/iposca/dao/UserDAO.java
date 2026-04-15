@@ -68,6 +68,15 @@ public class UserDAO {
         }
     }
 
+    public boolean updatePassword(String username, String newPassword) throws SQLException {
+        String sql = "UPDATE users SET password_hash = ? WHERE username = ?";
+        try (PreparedStatement stmt = DatabaseManager.getConnection().prepareStatement(sql)) {
+            stmt.setString(1, newPassword);
+            stmt.setString(2, username);
+            return stmt.executeUpdate() > 0;
+        }
+    }
+
     private User mapRow(ResultSet rs) throws SQLException {
         User user = new User();
         user.setUserID(rs.getInt("user_id"));

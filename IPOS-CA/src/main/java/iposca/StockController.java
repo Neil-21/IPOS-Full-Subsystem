@@ -1,5 +1,19 @@
 package iposca;
 
+import com.lowagie.text.Document;
+import com.lowagie.text.Element;
+import com.lowagie.text.Font;
+import com.lowagie.text.FontFactory;
+import com.lowagie.text.Paragraph;
+import com.lowagie.text.pdf.PdfPCell;
+import com.lowagie.text.pdf.PdfPTable;
+import com.lowagie.text.pdf.PdfWriter;
+import java.awt.Color;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import javafx.stage.FileChooser;
 import iposca.model.StockItem;
 import iposca.service.StockService;
 import javafx.beans.property.SimpleStringProperty;
@@ -97,6 +111,73 @@ public class StockController {
             }
         } catch (Exception e) {
             lowStockLabel.setText("Could not check stock levels.");
+        }
+    }
+
+    @FXML
+    void handleExportStockReport() {
+        FileChooser chooser = new FileChooser();
+        chooser.setTitle("Save Stock Report");
+        chooser.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("PDF Files", "*.pdf"));
+        chooser.setInitialFileName("stock_report_"
+                + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"))
+                + ".pdf");
+
+        Stage stage = (Stage) stockTable.getScene().getWindow();
+        File file = chooser.showSaveDialog(stage);
+        if (file == null) return;
+
+        Document document = new Document();
+        try (FileOutputStream out = new FileOutputStream(file)) {
+            PdfWriter.getInstance(document, out);
+            document.open();
+
+            Font titleFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 18);
+            Paragraph title = new Paragraph("Stock Report", titleFont);
+            title.setAlignment(Element.ALIGN_CENTER);
+            document.add(title);
+
+            Font smallFont = FontFactory.getFont(FontFactory.HELVETICA, 10);
+            Paragraph date = new Paragraph("Generated: "
+                    + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
+                    smallFont);
+            date.setAlignment(Element.ALIGN_CENTER);
+            date.setSpacingAfter(15f);
+            document.add(date);
+
+            PdfPTable table = new PdfPTable(new float[]{1.2f, 3f, 1.2f, 1.5f, 1.2f});
+            table.setWidthPercentage(100);
+
+            Font headerFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 11, Color.WHITE);
+            for (String h : new String[]{"Product ID", "Product Name", "Quantity", "Low Threshold", "Status"}) {
+                PdfPCell cell = new PdfPCell(new Paragraph(h, headerFont));
+                cell.setBackgroundColor(new Color(51, 102, 153));
+                cell.setPadding(6f);
+                table.addCell(cell);
+            }
+
+            Font bodyFont = FontFactory.getFont(FontFactory.HELVETICA, 10);
+            for (StockItem item : stockList) {
+                String status = item.getCurrentStock() <= item.getReorderLevel() ? "LOW STOCK" : "OK";
+                table.addCell(new PdfPCell(new Paragraph(item.getProductID(), bodyFont)));
+                table.addCell(new PdfPCell(new Paragraph(item.getProductName(), bodyFont)));
+                table.addCell(new PdfPCell(new Paragraph(String.valueOf(item.getCurrentStock()), bodyFont)));
+                table.addCell(new PdfPCell(new Paragraph(String.valueOf(item.getReorderLevel()), bodyFont)));
+                PdfPCell statusCell = new PdfPCell(new Paragraph(status, bodyFont));
+                if ("LOW STOCK".equals(status)) statusCell.setBackgroundColor(new Color(255, 220, 220));
+                table.addCell(statusCell);
+            }
+            document.add(table);
+            document.close();
+
+            Alert info = new Alert(Alert.AlertType.INFORMATION);
+            info.setHeaderText(null);
+            info.setContentText("Stock report saved:\n" + file.getAbsolutePath());
+            info.showAndWait();
+        } catch (Exception e) {
+            if (document.isOpen()) document.close();
+            showError("Could not generate PDF: " + e.getMessage());
         }
     }
 
