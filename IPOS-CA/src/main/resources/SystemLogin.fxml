@@ -9,14 +9,14 @@
 <AnchorPane prefHeight="593.0" prefWidth="834.0" style="-fx-background-color: #1a2744;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="iposca.SystemLoginController">
    <children>
       <Rectangle arcHeight="5.0" arcWidth="5.0" fill="white" height="428.0" layoutX="297.0" layoutY="62.0" opacity="1.0" stroke="#cbd5e1" strokeType="INSIDE" width="241.0" />
-      <PasswordField fx:id="passField" layoutX="340.0" layoutY="367.0" onKeyPressed="#logInKey" promptText="Please enter password..." />
-      <Text layoutX="340.0" layoutY="363.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Password">
+      <PasswordField fx:id="passField" layoutX="340.0" layoutY="352.0" onKeyPressed="#logInKey" promptText="Please enter password..." />
+      <Text layoutX="340.0" layoutY="348.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Password">
          <font>
             <Font name="Arial" size="16.0" />
          </font>
       </Text>
-      <TextField fx:id="userField" layoutX="340.0" layoutY="313.0" promptText="Please enter username..." />
-      <Text layoutX="340.0" layoutY="309.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Username">
+      <TextField fx:id="userField" layoutX="340.0" layoutY="298.0" promptText="Please enter username..." />
+      <Text layoutX="340.0" layoutY="294.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Username">
          <font>
             <Font name="Arial" size="16.0" />
          </font>
@@ -31,5 +31,15 @@
             <Font size="15.0" />
          </font>
       </Button>
+      <CheckBox layoutX="340.0" layoutY="377.0" mnemonicParsing="false" prefHeight="18.0" prefWidth="105.0" text="Remember Me">
+         <font>
+            <Font size="10.0" />
+         </font></CheckBox>
+      <Text layoutX="445.0" layoutY="345.0" opacity="0.32" strokeType="OUTSIDE" strokeWidth="0.0" text="Forgot?" underline="true" wrappingWidth="64.0">
+         <font>
+            <Font size="13.0" />
+         </font>
+      </Text>
+      <Button layoutX="432.0" layoutY="326.0" mnemonicParsing="false" onMouseClicked="#forgotPass" opacity="0.0" prefHeight="18.0" prefWidth="80.0" text="Forgot Button" />
    </children>
 </AnchorPane>
