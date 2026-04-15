@@ -28,7 +28,10 @@ public class DiscountPlanDAO {
 
     public List<DiscountPlan> getAll() throws SQLException {
         List<DiscountPlan> list = new ArrayList<>();
-        String sql = "SELECT * FROM discount_plans WHERE is_active = TRUE";
+        String sql = "SELECT DISTINCT ON (plan_name) * " +
+                "FROM ca.discount_plans " +
+                "WHERE is_active = TRUE " +
+                "ORDER BY plan_name, discount_plan_id";
         try (Statement stmt = DatabaseManager.getConnection().createStatement()) {
             ResultSet rs = stmt.executeQuery(sql);
             while (rs.next()) list.add(mapRow(rs));
@@ -56,6 +59,14 @@ public class DiscountPlanDAO {
             }
         }
         return tiers;
+    }
+
+    public boolean delete(int discountPlanId) throws SQLException {
+        String sql = "DELETE FROM ca.discount_plans WHERE discount_plan_id = ?";
+        try (PreparedStatement stmt = DatabaseManager.getConnection().prepareStatement(sql)) {
+            stmt.setInt(1, discountPlanId);
+            return stmt.executeUpdate() > 0;
+        }
     }
 
     private DiscountPlan mapRow(ResultSet rs) throws SQLException {
