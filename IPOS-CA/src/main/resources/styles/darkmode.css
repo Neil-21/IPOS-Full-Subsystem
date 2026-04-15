@@ -1,0 +1,37 @@
+.root {
+    -fx-base: #0f172a;
+    -fx-background: #0f172a;
+    -fx-control-inner-background: #1e293b;
+    -fx-control-inner-background-alt: #1e293b;
+    -fx-background-color: #0f172a !important;
+}
+
+Rectangle {
+    -fx-fill: #1e293b !important; /* Changes the light gray boxes to dark navy */
+    -fx-stroke: #334155 !important; /* Darkens the borders */
+}
+
+Rectangle#headerBar {
+    -fx-fill: #020617 !important; /* Almost black for the very top bar */
+}
+
+Text {
+    -fx-fill: #f8fafc !important; /* Off-white text */
+}
+
+Label {
+    -fx-text-fill: #f8fafc !important;
+}
+
+Text[fill="#94a3b8"], Text[fill="#64748b"] {
+    -fx-fill: #94a3b8 !important;
+}
+
+.button {
+    -fx-background-color: #334155;
+    -fx-text-fill: white;
+}
+
+.button:hover {
+    -fx-background-color: #475569;
+}
