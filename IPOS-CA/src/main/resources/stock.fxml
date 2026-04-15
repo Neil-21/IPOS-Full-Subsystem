@@ -80,6 +80,6 @@
             <Font size="11.0" />
          </font>
       </Label>
-      <Button layoutX="1032.0" layoutY="245.0" mnemonicParsing="false" onAction="#handleLowStock" prefHeight="34.0" prefWidth="173.0" style="-fx-background-color: #253558; -fx-text-fill: white; -fx-font-weight: bold;" text="Low Stock Report" />
+      <Button layoutX="1032.0" layoutY="245.0" mnemonicParsing="false" onAction="#handleShowLowStock" prefHeight="34.0" prefWidth="173.0" style="-fx-background-color: #253558; -fx-text-fill: white; -fx-font-weight: bold;" text="Low Stock Report" />
    </children>
 </AnchorPane>

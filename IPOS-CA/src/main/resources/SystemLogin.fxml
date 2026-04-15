@@ -31,7 +31,7 @@
             <Font size="15.0" />
          </font>
       </Button>
-      <CheckBox layoutX="340.0" layoutY="377.0" mnemonicParsing="false" prefHeight="18.0" prefWidth="105.0" text="Remember Me">
+      <CheckBox fx:id="rememberMe" layoutX="340.0" layoutY="377.0" mnemonicParsing="false" prefHeight="18.0" prefWidth="105.0" text="Remember Me">
          <font>
             <Font size="10.0" />
          </font></CheckBox>

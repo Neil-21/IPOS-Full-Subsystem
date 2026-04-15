@@ -6,14 +6,11 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import java.io.IOException;
 
@@ -34,7 +31,7 @@ public class SystemLoginController {
             if (rememberMe != null) rememberMe.setSelected(true);
         }
     }
-/*
+
     @FXML
     void forgotPass(MouseEvent event) {
         Dialog<ButtonType> dialog = new Dialog<>();
@@ -96,7 +93,7 @@ public class SystemLoginController {
             }
         });
     }
-*/
+
     @FXML
     void logIn(MouseEvent event) throws IOException {
         login();
@@ -107,6 +104,14 @@ public class SystemLoginController {
         if (event.getCode() == KeyCode.ENTER) {
             login();
         }
+    }
+
+    private void showError(String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 
     private void login() throws IOException {
