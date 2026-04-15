@@ -14,8 +14,10 @@ import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import javafx.event.ActionEvent;
 import java.io.IOException;
@@ -23,6 +25,11 @@ import java.util.List;
 
 public class DashController {
 
+    // --- DARK MODE UI ELEMENTS ---
+    @FXML private AnchorPane rootPane;
+    @FXML private ToggleButton darkModeToggle;
+
+    // --- STANDARD UI ELEMENTS ---
     @FXML private Label lowstockWarning;
     @FXML private Label paymentReminder;
     @FXML private Label salesTodayNo;
@@ -46,6 +53,12 @@ public class DashController {
         // Set welcome label from logged in user
         if (AuthService.getCurrentUser() != null) {
             helloLabel.setText("Welcome, " + AuthService.getCurrentUser().getFullName());
+        }
+
+        // Sync the Dark Mode toggle with the global state when the page loads
+        if (darkModeToggle != null) {
+            darkModeToggle.setSelected(ThemeManager.isDarkMode());
+            updateToggleButtonText();
         }
 
         // Run account status updates on dashboard load
@@ -161,6 +174,8 @@ public class DashController {
         }
     }
 
+    // --- NAVIGATION METHODS ---
+
     @FXML
     void handleOpenSales(ActionEvent event) throws IOException {
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
@@ -206,8 +221,34 @@ public class DashController {
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         Utils.switchScene(stage, "/Reports.fxml", "Reports");
     }
+
     @FXML public void templates(MouseEvent event) throws IOException {
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         Utils.switchScene(stage, "/Templates.fxml", "Reminder Templates");
+    }
+
+    // --- DARK MODE LOGIC ---
+    @FXML
+    public void toggleDarkMode() {
+        if (rootPane != null) {
+            // Save the user's choice to the global state
+            ThemeManager.setDarkMode(darkModeToggle.isSelected());
+
+            // Apply or remove the CSS immediately on the current screen
+            ThemeManager.applyTheme(rootPane);
+
+            // Update the text on the button
+            updateToggleButtonText();
+        } else {
+            System.err.println("rootPane is null! Make sure the main AnchorPane in your FXML has fx:id=\"rootPane\"");
+        }
+    }
+
+    private void updateToggleButtonText() {
+        if (darkModeToggle.isSelected()) {
+            darkModeToggle.setText("☀ Light Mode");
+        } else {
+            darkModeToggle.setText("🌙 Dark Mode");
+        }
     }
 }
