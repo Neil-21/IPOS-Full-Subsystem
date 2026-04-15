@@ -104,7 +104,7 @@
       </TableView>
 
       <Button layoutX="523.0" layoutY="769.0" mnemonicParsing="false" onAction="#handleGenerateReminders" prefHeight="34.0" prefWidth="200.0" style="-fx-background-color: #0d9488; -fx-text-fill: white; -fx-font-weight: bold;" text="⚙ Generate Payment Reminders" />
-      <Button layoutX="893.0" layoutY="236.0" mnemonicParsing="false" onAction="#handleDeleteDiscount" prefHeight="34.0" prefWidth="141.0" style="-fx-background-color: #F44336; -fx-text-fill: white; -fx-font-weight: bold;" text="🗑 Delete Plan" />
+      <Button layoutX="893.0" layoutY="236.0" mnemonicParsing="false" onAction="#handleDeleteDiscountPlan" prefHeight="34.0" prefWidth="141.0" style="-fx-background-color: #F44336; -fx-text-fill: white; -fx-font-weight: bold;" text="🗑 Delete Plan" />
       <Button layoutX="1061.0" layoutY="236.0" mnemonicParsing="false" onAction="#handleRecordPayment" prefHeight="34.0" prefWidth="141.0" style="-fx-background-color: #0d9488; -fx-text-fill: white; -fx-font-weight: bold;" text="💳 Record Payment" />
       <Button layoutX="742.0" layoutY="236.0" mnemonicParsing="false" onAction="#handleModifyDiscountPlan" prefHeight="34.0" prefWidth="141.0" style="-fx-background-color: #253558; -fx-text-fill: white; -fx-font-weight: bold;" text="🖋 Modify Plan" />
       <Button layoutX="591.0" layoutY="236.0" mnemonicParsing="false" onAction="#handleAddDiscountPlan" prefHeight="34.0" prefWidth="141.0" style="-fx-background-color: #0d9488; -fx-text-fill: white; -fx-font-weight: bold;" text="➕ Add Plan" />
