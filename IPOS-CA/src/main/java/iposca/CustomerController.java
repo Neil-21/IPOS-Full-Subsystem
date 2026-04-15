@@ -579,6 +579,75 @@ public class CustomerController {
         });
     }
 
+    @FXML
+    void handleDeleteDiscountPlan() {
+        Dialog<ButtonType> dialog = new Dialog<>();
+        dialog.setTitle("Delete Discount Plan");
+        dialog.setHeaderText("Select a discount plan to delete");
+
+        ComboBox<DiscountPlan> planBox = new ComboBox<>();
+        try {
+            planBox.getItems().setAll(discountDAO.getAll());
+            planBox.setCellFactory(lv -> new ListCell<>() {
+                @Override protected void updateItem(DiscountPlan p, boolean empty) {
+                    super.updateItem(p, empty);
+                    setText(empty || p == null ? null : p.getPlanName() + " (" + p.getPlanType() + ")");
+                }
+            });
+            planBox.setButtonCell(new ListCell<>() {
+                @Override protected void updateItem(DiscountPlan p, boolean empty) {
+                    super.updateItem(p, empty);
+                    setText(empty || p == null ? null : p.getPlanName() + " (" + p.getPlanType() + ")");
+                }
+            });
+        } catch (Exception e) {
+            showError("Could not load discount plans: " + e.getMessage());
+            return;
+        }
+
+        javafx.scene.layout.GridPane grid = new javafx.scene.layout.GridPane();
+        grid.setHgap(10); grid.setVgap(10);
+        grid.setPadding(new javafx.geometry.Insets(20, 150, 10, 10));
+        grid.add(new Label("Discount Plan:"), 0, 0);
+        grid.add(planBox, 1, 0);
+        dialog.getDialogPane().setContent(grid);
+
+        ButtonType deleteType = new ButtonType("Delete", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(deleteType, ButtonType.CANCEL);
+
+        dialog.showAndWait().ifPresent(response -> {
+            if (response == deleteType) {
+                DiscountPlan selected = planBox.getValue();
+                if (selected == null) {
+                    showError("Please select a plan to delete.");
+                    return;
+                }
+                boolean inUse = customerList.stream()
+                        .anyMatch(ah -> ah.getDiscountPlanID() != null &&
+                                ah.getDiscountPlanID() == selected.getDiscountPlanID());
+                if (inUse) {
+                    showError("Cannot delete this plan — it is assigned to one or more customers. Reassign them first.");
+                    return;
+                }
+                Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
+                confirm.setTitle("Confirm Delete");
+                confirm.setContentText("Delete plan: " + selected.getPlanName() + "?");
+                confirm.showAndWait().ifPresent(r -> {
+                    if (r == ButtonType.OK) {
+                        try {
+                            discountDAO.delete(selected.getDiscountPlanID());
+                            Alert success = new Alert(Alert.AlertType.INFORMATION);
+                            success.setContentText("Discount plan deleted successfully.");
+                            success.showAndWait();
+                        } catch (Exception e) {
+                            showError("Could not delete plan: " + e.getMessage());
+                        }
+                    }
+                });
+            }
+        });
+    }
+
     private void showError(String msg) {
         Alert a = new Alert(Alert.AlertType.ERROR);
         a.setHeaderText(null);
