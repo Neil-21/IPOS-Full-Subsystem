@@ -155,7 +155,7 @@ public class SalesCheckoutController {
         } else if (method.equals(Enums.PaymentMethod.CASH.name())) {
             completeSale("Cash", null, null, null, 0, 0);
         } else if (method.equals(Enums.PaymentMethod.CREDITS.name())) {
-            javafx.scene.control.TextInputDialog dialog = new javafx.scene.control.TextInputDialog();
+            TextInputDialog dialog = new TextInputDialog();
             dialog.setTitle("Credit Account Required");
             dialog.setHeaderText("Payment Method: Credits");
             dialog.setContentText("Please enter the Account Holder ID:");
@@ -164,10 +164,42 @@ public class SalesCheckoutController {
 
             if (result.isPresent() && !result.get().trim().isEmpty()) {
                 String accountId = result.get().trim();
-                completeSale("Credit", accountId, null, null, 0, 0);
+                try {
+                    iposca.dao.AccountHolderDAO accountDAO = new iposca.dao.AccountHolderDAO();
+                    iposca.model.AccountHolder ah = accountDAO.findByID(accountId);
+
+                    if (ah == null) {
+                        showError("Account ID not found. Please check and try again.");
+                        return;
+                    }
+                    if (!ah.getAccountStatus().equals("Normal")) {
+                        showError("This account is " + ah.getAccountStatus() +
+                                " and cannot make credit purchases.");
+                        return;
+                    }
+
+                    double cartTotal = 0.0;
+                    for (StockItem item : cartData) {
+                        int qty = cartQuantities.getOrDefault(item.getProductID(), 1);
+                        cartTotal += item.getRetailPrice().doubleValue() * qty;
+                    }
+
+                    double newBalance = ah.getCurrentBalance().doubleValue() + cartTotal;
+                    if (newBalance > ah.getCreditLimit().doubleValue()) {
+                        showError("This purchase of £" + String.format("%.2f", cartTotal) +
+                                " would exceed the credit limit of £" +
+                                ah.getCreditLimit().toPlainString() +
+                                ".\nCurrent balance: £" + ah.getCurrentBalance().toPlainString());
+                        return;
+                    }
+
+                    completeSale("Credit", accountId, null, null, 0, 0);
+
+                } catch (Exception e) {
+                    showError("Could not validate account: " + e.getMessage());
+                }
             } else if (result.isPresent()) {
                 showError("Account ID is required for credit payments.");
-                //please check, currently flags when wrong account ID is being written
             }
         }
     }
