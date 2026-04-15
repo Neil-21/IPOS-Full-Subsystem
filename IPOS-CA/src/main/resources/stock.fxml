@@ -1,47 +1,47 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.shape.Line?>
-<?import javafx.scene.shape.Rectangle?>
-<?import javafx.scene.text.Font?>
-<?import javafx.scene.text.Text?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="688.0" prefWidth="1234.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="iposca.StockController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="688.0" prefWidth="1234.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="iposca.StockController">
    <children>
-      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#e3e3e3" height="599.0" layoutX="14.0" layoutY="77.0" stroke="BLACK" strokeType="INSIDE" width="1207.0" />
-      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#e4e4e4" height="60.0" stroke="BLACK" strokeType="INSIDE" width="1234.0" />
-      <Text layoutX="7.0" layoutY="31.0" strokeType="OUTSIDE" strokeWidth="0.0" text="InfoPharma IPOS-CA" wrappingWidth="141.13671875">
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#f0f4f8" height="599.0" layoutX="14.0" layoutY="77.0" stroke="#cbd5e1" strokeType="INSIDE" width="1207.0" />
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1a2744" height="60.0" stroke="#cbd5e1" strokeType="INSIDE" width="1234.0" />
+      <Text fill="white" layoutX="7.0" layoutY="31.0" strokeType="OUTSIDE" strokeWidth="0.0" text="InfoPharma IPOS-CA" wrappingWidth="141.13671875">
          <font>
             <Font size="15.0" />
          </font>
       </Text>
-      <Text fill="#00000066" layoutX="7.0" layoutY="44.0" strokeType="OUTSIDE" strokeWidth="0.0" text="PHARMACY CLIENT APPLICATION" wrappingWidth="259.13671875">
+      <Text fill="#94a3b8" layoutX="7.0" layoutY="44.0" strokeType="OUTSIDE" strokeWidth="0.0" text="PHARMACY CLIENT APPLICATION" wrappingWidth="259.13671875">
          <font>
             <Font size="9.0" />
          </font>
       </Text>
       <Line endX="-100.0" endY="58.0" layoutX="259.0" layoutY="2.0" startX="-100.0" startY="-1.0" />
-      <Button layoutX="171.0" layoutY="17.0" mnemonicParsing="false" onMouseClicked="#home" prefHeight="34.0" prefWidth="73.0" text="Home" />
-      <Button layoutX="256.0" layoutY="17.0" mnemonicParsing="false" onMouseClicked="#sales" prefHeight="34.0" prefWidth="73.0" text="Sales" />
-      <Button layoutX="340.0" layoutY="17.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="73.0" text="Stock">
+
+      <Button layoutX="171.0" layoutY="17.0" mnemonicParsing="false" onMouseClicked="#home" prefHeight="34.0" prefWidth="73.0" style="-fx-background-color: #253558; -fx-text-fill: white;" text="Home" />
+      <Button layoutX="256.0" layoutY="17.0" mnemonicParsing="false" onMouseClicked="#sales" prefHeight="34.0" prefWidth="73.0" style="-fx-background-color: #253558; -fx-text-fill: white;" text="Sales" />
+      <Button layoutX="340.0" layoutY="17.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="73.0" style="-fx-background-color: #0d9488; -fx-text-fill: white;" text="Stock">
          <font>
             <Font name="System Bold" size="12.0" />
          </font>
       </Button>
-      <Button layoutX="425.0" layoutY="17.0" mnemonicParsing="false" onMouseClicked="#orders" prefHeight="34.0" prefWidth="73.0" text="Orders" />
-      <Button layoutX="511.0" layoutY="17.0" mnemonicParsing="false" onMouseClicked="#customers" prefHeight="34.0" prefWidth="73.0" text="Customers" />
+      <Button layoutX="425.0" layoutY="17.0" mnemonicParsing="false" onMouseClicked="#orders" prefHeight="34.0" prefWidth="73.0" style="-fx-background-color: #253558; -fx-text-fill: white;" text="Orders" />
+      <Button layoutX="511.0" layoutY="17.0" mnemonicParsing="false" onMouseClicked="#customers" prefHeight="34.0" prefWidth="73.0" style="-fx-background-color: #253558; -fx-text-fill: white;" text="Customers" />
+
+      <Button layoutX="595.0" layoutY="17.0" mnemonicParsing="false" onMouseClicked="#users" prefHeight="34.0" prefWidth="127.0" style="-fx-background-color: #253558; -fx-text-fill: white;" text="User Management" />
+      <Button layoutX="731.0" layoutY="18.0" mnemonicParsing="false" onMouseClicked="#reports" prefHeight="34.0" prefWidth="73.0" style="-fx-background-color: #253558; -fx-text-fill: white;" text="Reports" />
+      <Button layoutX="817.0" layoutY="18.0" mnemonicParsing="false" onMouseClicked="#templates" prefHeight="34.0" prefWidth="73.0" style="-fx-background-color: #253558; -fx-text-fill: white;" text="Templates" />
+
       <Line endX="1084.0" layoutX="127.0" layoutY="124.0" startX="-100.0" />
       <Label layoutX="31.0" layoutY="93.0" prefHeight="26.0" prefWidth="190.0" text="STOCK MANAGEMENT">
          <font>
             <Font name="System Bold" size="17.0" />
          </font>
       </Label>
-      <Text fill="#00000066" layoutX="221.0" layoutY="110.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Inventory Control" wrappingWidth="259.13671875">
+      <Text fill="#64748b" layoutX="221.0" layoutY="110.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Inventory Control" wrappingWidth="259.13671875">
          <font>
             <Font size="9.0" />
          </font>
@@ -52,33 +52,33 @@
          </font>
       </Text>
       <Line endX="1073.0" layoutX="131.0" layoutY="317.0" startX="-100.0" />
-      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#e3e3e3" height="45.0" layoutX="30.0" layoutY="136.0" stroke="BLACK" strokeType="INSIDE" width="1174.0" />
+
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#f0f4f8" height="45.0" layoutX="30.0" layoutY="136.0" stroke="#cbd5e1" strokeType="INSIDE" width="1174.0" />
       <Text layoutX="39.0" layoutY="157.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Low Stock Warning" wrappingWidth="173.13671875">
          <font>
             <Font name="System Bold" size="13.0" />
          </font>
       </Text>
       <TextField fx:id="searchField" layoutX="31.0" layoutY="194.0" prefHeight="34.0" prefWidth="1174.0" promptText="Search stock by product name..." />
-      <Button layoutX="32.0" layoutY="245.0" mnemonicParsing="false" onAction="#handleAddStock" prefHeight="34.0" prefWidth="85.0" text="Add Stock" />
-      <Button layoutX="128.0" layoutY="245.0" mnemonicParsing="false" onAction="#handleSetThreshold" prefHeight="34.0" prefWidth="160.0" text="Set Low Stock Threshold" />
+
+      <Button layoutX="32.0" layoutY="245.0" mnemonicParsing="false" onAction="#handleAddStock" prefHeight="34.0" prefWidth="91.0" style="-fx-background-color: #0d9488; -fx-text-fill: white; -fx-font-weight: bold;" text="➕ Add Stock" />
+      <Button layoutX="133.0" layoutY="245.0" mnemonicParsing="false" onAction="#handleSetThreshold" prefHeight="34.0" prefWidth="173.0" style="-fx-background-color: #253558; -fx-text-fill: white; -fx-font-weight: bold;" text="⚠ Set Low Stock Threshold" />
+      <Button layoutX="316.0" layoutY="245.0" mnemonicParsing="false" onAction="#handleModifyStock" prefHeight="34.0" prefWidth="160.0" style="-fx-background-color: #253558; -fx-text-fill: white; -fx-font-weight: bold;" text="🖋 Modify Quantity" />
+
       <TableView fx:id="stockTable" layoutX="37.0" layoutY="333.0" prefHeight="325.0" prefWidth="905.0">
-        <columns>
-          <TableColumn fx:id="colName" prefWidth="330.0" text="Product Name" />
-          <TableColumn fx:id="colQuantity" minWidth="7.0" prefWidth="140.0" text="Quantity" />
+         <columns>
+            <TableColumn fx:id="colName" prefWidth="330.0" text="Product Name" />
+            <TableColumn fx:id="colQuantity" minWidth="7.0" prefWidth="140.0" text="Quantity" />
             <TableColumn fx:id="colThreshold" prefWidth="178.0" text="Low Stock Threshold" />
             <TableColumn fx:id="colStatus" prefWidth="256.0" text="Status" />
-        </columns>
+         </columns>
       </TableView>
-      <Button layoutX="998.0" layoutY="436.0" mnemonicParsing="false" prefHeight="60.0" prefWidth="141.0" text="Export Stock Report" />
-      <Button layoutX="998.0" layoutY="512.0" mnemonicParsing="false" prefHeight="60.0" prefWidth="141.0" text="Confirm Delivery" />
-      <Label fx:id="lowStockLabel" layoutX="39.0" layoutY="162.0" prefHeight="17.0" prefWidth="1151.0" textFill="#a8a8a8">
+      <Button layoutX="998.0" layoutY="436.0" mnemonicParsing="false" prefHeight="60.0" prefWidth="148.0" style="-fx-background-color: #253558; -fx-text-fill: white; -fx-font-weight: bold;" text="📥 Export Stock Report" />
+      <Button layoutX="998.0" layoutY="512.0" mnemonicParsing="false" prefHeight="60.0" prefWidth="148.0" style="-fx-background-color: #0d9488; -fx-text-fill: white; -fx-font-weight: bold;" text="✔ Confirm Delivery" />
+      <Label fx:id="lowStockLabel" layoutX="39.0" layoutY="162.0" prefHeight="17.0" prefWidth="1151.0" textFill="#64748b">
          <font>
             <Font size="11.0" />
          </font>
       </Label>
-      <Button layoutX="297.0" layoutY="245.0" mnemonicParsing="false" onAction="#handleModifyStock" prefHeight="34.0" prefWidth="160.0" text="Modify Quantity" />
-      <Button layoutX="595.0" layoutY="17.0" mnemonicParsing="false" onMouseClicked="#users" prefHeight="34.0" prefWidth="127.0" text="User Management" />
-      <Button layoutX="731.0" layoutY="18.0" mnemonicParsing="false" onMouseClicked="#reports" prefHeight="34.0" prefWidth="73.0" text="Reports" />
-      <Button layoutX="817.0" layoutY="18.0" mnemonicParsing="false" onMouseClicked="#templates" prefHeight="34.0" prefWidth="73.0" text="Templates" />
    </children>
 </AnchorPane>
