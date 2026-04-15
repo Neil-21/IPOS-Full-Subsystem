@@ -23,7 +23,7 @@ import main.model.Product;
 import main.service.CatalogueService;
 import main.service.OrderService;
 import main.implementation.PUCommsAPIImpl;
-
+import main.service.EmailApiServer;
 
 /**
  * IPOS-PU Desktop GUI Prototype
@@ -1010,6 +1010,15 @@ public class IPOS_PU_GUI extends JFrame {
 
     // ==================== MAIN ====================
     public static void main(String[] args) {
+
+        try {
+            EmailApiServer emailApiServer = new EmailApiServer();
+            emailApiServer.start(8082);
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Failed to start Email API server");
+        }
+
         SwingUtilities.invokeLater(() -> {
             try {
                 DatabaseManager.initialise();
