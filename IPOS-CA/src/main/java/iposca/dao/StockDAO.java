@@ -117,6 +117,15 @@ public class StockDAO {
         }
     }
 
+    public boolean setStockQuantity(String productId, int quantity) throws SQLException {
+        String sql = "UPDATE stock_items SET current_stock = ? WHERE product_id = ?";
+        try (PreparedStatement stmt = DatabaseManager.getConnection().prepareStatement(sql)) {
+            stmt.setInt(1, quantity);
+            stmt.setString(2, productId);
+            return stmt.executeUpdate() > 0;
+        }
+    }
+
     private StockItem mapRow(ResultSet rs) throws SQLException {
         StockItem item = new StockItem();
         item.setProductID(rs.getString("product_id"));

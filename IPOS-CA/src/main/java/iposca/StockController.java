@@ -212,7 +212,49 @@ public class StockController {
 
     @FXML
     void handleModifyStock() {
-        //add the code for the handle quantity button here
+        StockItem selected = stockTable.getSelectionModel().getSelectedItem();
+        if (selected == null) {
+            showError("Please select a stock item to modify.");
+            return;
+        }
+
+        Dialog<ButtonType> dialog = new Dialog<>();
+        dialog.setTitle("Modify Stock Quantity");
+        dialog.setHeaderText("Modify quantity for: " + selected.getProductName());
+
+        TextField quantityField = new TextField(String.valueOf(selected.getCurrentStock()));
+
+        javafx.scene.layout.GridPane grid = new javafx.scene.layout.GridPane();
+        grid.setHgap(10); grid.setVgap(10);
+        grid.setPadding(new javafx.geometry.Insets(20, 150, 10, 10));
+        grid.add(new Label("Current Stock:"), 0, 0);
+        grid.add(new Label(String.valueOf(selected.getCurrentStock())), 1, 0);
+        grid.add(new Label("New Quantity:"), 0, 1);
+        grid.add(quantityField, 1, 1);
+        dialog.getDialogPane().setContent(grid);
+
+        ButtonType saveType = new ButtonType("Save", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(saveType, ButtonType.CANCEL);
+
+        dialog.showAndWait().ifPresent(response -> {
+            if (response == saveType) {
+                try {
+                    int newQty = Integer.parseInt(quantityField.getText().trim());
+                    if (newQty < 0) {
+                        showError("Quantity cannot be negative.");
+                        return;
+                    }
+                    selected.setCurrentStock(newQty);
+                    StockService.updateStockQuantity(selected.getProductID(), newQty);
+                    stockTable.refresh();
+                    updateLowStockWarnings();
+                } catch (NumberFormatException e) {
+                    showError("Please enter a valid number.");
+                } catch (Exception e) {
+                    showError("Could not update stock: " + e.getMessage());
+                }
+            }
+        });
     }
 
     private void showError(String message) {

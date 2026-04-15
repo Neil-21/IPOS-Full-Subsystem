@@ -39,4 +39,8 @@ public class StockService {
     public static boolean hasLowStock() throws SQLException {
         return !stockDAO.getLowStockItems().isEmpty();
     }
+
+    public static boolean updateStockQuantity(String productId, int newQty) throws SQLException {
+        return stockDAO.setStockQuantity(productId, newQty);
+    }
 }
