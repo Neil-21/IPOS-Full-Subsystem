@@ -69,6 +69,18 @@ public class DiscountPlanDAO {
         }
     }
 
+    public boolean insert(String planName, String planType,
+                          java.math.BigDecimal discountPercentage) throws SQLException {
+        String sql = "INSERT INTO ca.discount_plans (plan_name, plan_type, discount_percentage) " +
+                "VALUES (?, ?, ?)";
+        try (PreparedStatement stmt = DatabaseManager.getConnection().prepareStatement(sql)) {
+            stmt.setString(1, planName);
+            stmt.setString(2, planType);
+            stmt.setBigDecimal(3, discountPercentage);
+            return stmt.executeUpdate() > 0;
+        }
+    }
+
     private DiscountPlan mapRow(ResultSet rs) throws SQLException {
         DiscountPlan plan = new DiscountPlan();
         plan.setDiscountPlanID(rs.getInt("discount_plan_id"));

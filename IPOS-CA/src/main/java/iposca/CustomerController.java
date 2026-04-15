@@ -462,6 +462,123 @@ public class CustomerController {
         accountDAO.delete(accountId);
     }
 
+    @FXML
+    void handleAddDiscountPlan() {
+        Dialog<ButtonType> dialog = new Dialog<>();
+        dialog.setTitle("Add Discount Plan");
+        dialog.setHeaderText("Create a new discount plan");
+
+        TextField nameField = new TextField();
+        ComboBox<String> typeBox = new ComboBox<>();
+        typeBox.getItems().addAll("FIXED", "FLEXIBLE");
+        typeBox.setPromptText("Select type");
+        TextField percentageField = new TextField();
+        percentageField.setPromptText("e.g. 5.00");
+
+        javafx.scene.layout.GridPane grid = new javafx.scene.layout.GridPane();
+        grid.setHgap(10); grid.setVgap(10);
+        grid.setPadding(new javafx.geometry.Insets(20, 150, 10, 10));
+        grid.add(new Label("Plan Name:"), 0, 0);      grid.add(nameField, 1, 0);
+        grid.add(new Label("Type:"), 0, 1);           grid.add(typeBox, 1, 1);
+        grid.add(new Label("Discount % (Fixed):"), 0, 2); grid.add(percentageField, 1, 2);
+        dialog.getDialogPane().setContent(grid);
+
+        ButtonType saveType = new ButtonType("Save", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(saveType, ButtonType.CANCEL);
+
+        dialog.showAndWait().ifPresent(response -> {
+            if (response == saveType) {
+                if (nameField.getText().isEmpty() || typeBox.getValue() == null) {
+                    showError("Name and type are required.");
+                    return;
+                }
+                try {
+                    discountDAO.insert(
+                            nameField.getText().trim(),
+                            typeBox.getValue(),
+                            percentageField.getText().isEmpty() ? null :
+                                    new java.math.BigDecimal(percentageField.getText().trim())
+                    );
+                    Alert success = new Alert(Alert.AlertType.INFORMATION);
+                    success.setContentText("Discount plan created successfully.");
+                    success.showAndWait();
+                } catch (NumberFormatException e) {
+                    showError("Please enter a valid percentage.");
+                } catch (Exception e) {
+                    showError("Could not create plan: " + e.getMessage());
+                }
+            }
+        });
+    }
+
+    @FXML
+    void handleModifyDiscountPlan() {
+        AccountHolder selected = customerTable.getSelectionModel().getSelectedItem();
+        if (selected == null) {
+            showError("Please select a customer to modify their discount plan.");
+            return;
+        }
+
+        Dialog<ButtonType> dialog = new Dialog<>();
+        dialog.setTitle("Modify Discount Plan");
+        dialog.setHeaderText("Change discount plan for: " + selected.getFullName());
+
+        ComboBox<DiscountPlan> planBox = new ComboBox<>();
+        try {
+            planBox.getItems().setAll(discountDAO.getAll());
+            planBox.setCellFactory(lv -> new ListCell<>() {
+                @Override protected void updateItem(DiscountPlan p, boolean empty) {
+                    super.updateItem(p, empty);
+                    setText(empty || p == null ? null : p.getPlanName() + " (" + p.getPlanType() + ")");
+                }
+            });
+            planBox.setButtonCell(new ListCell<>() {
+                @Override protected void updateItem(DiscountPlan p, boolean empty) {
+                    super.updateItem(p, empty);
+                    setText(empty || p == null ? null : p.getPlanName() + " (" + p.getPlanType() + ")");
+                }
+            });
+            if (selected.getDiscountPlanID() != null) {
+                planBox.getItems().stream()
+                        .filter(p -> p.getDiscountPlanID() == selected.getDiscountPlanID())
+                        .findFirst()
+                        .ifPresent(planBox::setValue);
+            }
+        } catch (Exception e) {
+            showError("Could not load discount plans: " + e.getMessage());
+            return;
+        }
+
+        javafx.scene.layout.GridPane grid = new javafx.scene.layout.GridPane();
+        grid.setHgap(10); grid.setVgap(10);
+        grid.setPadding(new javafx.geometry.Insets(20, 150, 10, 10));
+        grid.add(new Label("New Discount Plan:"), 0, 0);
+        grid.add(planBox, 1, 0);
+        dialog.getDialogPane().setContent(grid);
+
+        ButtonType saveType = new ButtonType("Save", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(saveType, ButtonType.CANCEL);
+
+        dialog.showAndWait().ifPresent(response -> {
+            if (response == saveType) {
+                if (planBox.getValue() == null) {
+                    showError("Please select a discount plan.");
+                    return;
+                }
+                try {
+                    selected.setDiscountPlanID(planBox.getValue().getDiscountPlanID());
+                    accountDAO.update(selected);
+                    loadCustomers();
+                    Alert success = new Alert(Alert.AlertType.INFORMATION);
+                    success.setContentText("Discount plan updated for " + selected.getFullName());
+                    success.showAndWait();
+                } catch (Exception e) {
+                    showError("Could not update discount plan: " + e.getMessage());
+                }
+            }
+        });
+    }
+
     private void showError(String msg) {
         Alert a = new Alert(Alert.AlertType.ERROR);
         a.setHeaderText(null);
