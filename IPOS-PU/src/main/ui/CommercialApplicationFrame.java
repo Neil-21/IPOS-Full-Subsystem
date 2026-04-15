@@ -187,6 +187,27 @@ public class CommercialApplicationFrame extends JFrame {
 
             applicationService.saveApplication(application);
 
+            boolean sentToSA = applicationService.sendToSA(application);
+
+            if (sentToSA) {
+                JOptionPane.showMessageDialog(
+                        this,
+                        "Commercial application submitted successfully.\n\n" +
+                                "Application ID: " + applicationId + "\n" +
+                                "Status: PENDING\n" +
+                                "Application forwarded to SA.",
+                        "Application Submitted",
+                        JOptionPane.INFORMATION_MESSAGE
+                );
+            } else {
+                JOptionPane.showMessageDialog(
+                        this,
+                        "Application was saved locally, but could not be forwarded to SA.",
+                        "Partial Success",
+                        JOptionPane.WARNING_MESSAGE
+                );
+            }
+
             JOptionPane.showMessageDialog(
                     this,
                     "Commercial application submitted successfully.\n\n" +

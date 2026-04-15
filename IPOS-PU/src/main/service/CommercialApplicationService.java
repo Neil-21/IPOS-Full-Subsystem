@@ -8,6 +8,13 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import com.google.gson.Gson;
+
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+
 public class CommercialApplicationService {
 
     public void saveApplication(CommercialApplication application) throws SQLException {
@@ -78,4 +85,96 @@ public class CommercialApplicationService {
             }
         }
     }
+
+    public boolean sendToSA(CommercialApplication application) {
+        try {
+            HttpClient client = HttpClient.newHttpClient();
+            Gson gson = new Gson();
+
+            String fullAddress = application.getAddressLine1();
+            if (application.getAddressLine2() != null && !application.getAddressLine2().isBlank()) {
+                fullAddress = fullAddress + ", " + application.getAddressLine2();
+            }
+            fullAddress = fullAddress + ", " + application.getCity() + ", " + application.getPostcode();
+
+            java.util.Map<String, String> requestBody = new java.util.HashMap<>();
+            requestBody.put("applicationId", application.getApplicationId());
+            requestBody.put("type", "commercial");
+            requestBody.put("email", application.getEmail());
+            requestBody.put("companyName", application.getCompanyName());
+            requestBody.put("companyHouseReg", application.getCompanyHouseRegistration());
+            requestBody.put("directorName", application.getDirectorName());
+            requestBody.put("businessType", application.getBusinessType());
+            requestBody.put("address", fullAddress);
+
+            String json = gson.toJson(requestBody);
+
+            System.out.println("Sending JSON to SA: " + json);
+
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create("http://localhost:8080/api/pu-applications"))
+                    .header("Content-Type", "application/json")
+                    .POST(HttpRequest.BodyPublishers.ofString(json))
+                    .build();
+
+            HttpResponse<String> response =
+                    client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            System.out.println("SA response code: " + response.statusCode());
+            System.out.println("SA response body: " + response.body());
+
+            return response.statusCode() == 201;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+//    public boolean sendToSA(CommercialApplication application) {
+//        try {
+//            HttpClient client = HttpClient.newHttpClient();
+//            Gson gson = new Gson();
+//
+//            String fullAddress = application.getAddressLine1();
+//            if (application.getAddressLine2() != null && !application.getAddressLine2().isBlank()) {
+//                fullAddress = fullAddress + ", " + application.getAddressLine2();
+//            }
+//            fullAddress = fullAddress + ", " + application.getCity() + ", " + application.getPostcode();
+//
+//            final String addressFinal = fullAddress;
+//
+//
+//            Object requestBody = new Object() {
+//                final String applicationId = application.getApplicationId();
+//                final String type = "commercial";
+//                final String email = application.getEmail();
+//                final String companyName = application.getCompanyName();
+//                final String companyHouseReg = application.getCompanyHouseRegistration();
+//                final String directorName = application.getDirectorName();
+//                final String businessType = application.getBusinessType();
+//                final String address = addressFinal;
+//            };
+//
+//            String json = gson.toJson(requestBody);
+//
+//            HttpRequest request = HttpRequest.newBuilder()
+//                    .uri(URI.create("http://localhost:8080/api/pu-applications"))
+//                    .header("Content-Type", "application/json")
+//                    .POST(HttpRequest.BodyPublishers.ofString(json))
+//                    .build();
+//
+//            HttpResponse<String> response =
+//                    client.send(request, HttpResponse.BodyHandlers.ofString());
+//
+//            System.out.println("SA response code: " + response.statusCode());
+//            System.out.println("SA response body: " + response.body());
+//
+//            return response.statusCode() == 201;
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return false;
+//        }
+//    }
 }
