@@ -182,6 +182,37 @@ public class StockController {
     }
 
     @FXML
+    void handleShowLowStock() {
+        try {
+            List<StockItem> lowStock = StockService.getLowStockItems();
+            if (lowStock.isEmpty()) {
+                Alert a = new Alert(Alert.AlertType.INFORMATION);
+                a.setContentText("All stock levels are healthy.");
+                a.showAndWait();
+                return;
+            }
+            StringBuilder sb = new StringBuilder();
+            sb.append("Items below reorder level:\n\n");
+            for (StockItem item : lowStock) {
+                sb.append(String.format("%-30s Current: %-5d Threshold: %d%n",
+                        item.getProductName(),
+                        item.getCurrentStock(),
+                        item.getReorderLevel()));
+            }
+            TextArea ta = new TextArea(sb.toString());
+            ta.setEditable(false);
+            ta.setPrefSize(450, 300);
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Low Stock Report");
+            alert.setHeaderText("The following items are below their reorder level:");
+            alert.getDialogPane().setContent(ta);
+            alert.showAndWait();
+        } catch (Exception e) {
+            showError("Could not generate low stock list: " + e.getMessage());
+        }
+    }
+
+    @FXML
     void handleSetThreshold() {
         Dialog<ButtonType> dialog = new Dialog<>();
         dialog.setTitle("Set Low Stock Threshold");
