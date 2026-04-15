@@ -1,11 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.shape.*?>
-<?import javafx.scene.text.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.shape.Line?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="868.0" prefWidth="1234.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="iposca.OrdersController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="740.0" prefWidth="1234.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="iposca.OrdersController">
    <children>
       <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1a2744" height="60.0" stroke="#cbd5e1" strokeType="INSIDE" width="1234.0" />
       <Text fill="white" layoutX="7.0" layoutY="31.0" strokeType="OUTSIDE" strokeWidth="0.0" text="InfoPharma IPOS-CA" wrappingWidth="141.13671875">
@@ -34,7 +40,7 @@
       <Button layoutX="729.0" layoutY="17.0" mnemonicParsing="false" onMouseClicked="#reports" prefHeight="34.0" prefWidth="73.0" style="-fx-background-color: #253558; -fx-text-fill: white;" text="Reports" />
       <Button layoutX="815.0" layoutY="17.0" mnemonicParsing="false" onMouseClicked="#templates" prefHeight="34.0" prefWidth="73.0" style="-fx-background-color: #253558; -fx-text-fill: white;" text="Templates" />
 
-      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#f0f4f8" height="788.0" layoutX="19.0" layoutY="72.0" stroke="#cbd5e1" strokeType="INSIDE" width="1203.0" />
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#f0f4f8" height="652.0" layoutX="19.0" layoutY="72.0" stroke="#cbd5e1" strokeType="INSIDE" width="1203.0" />
       <Line endX="1084.0" layoutX="126.0" layoutY="105.0" startX="-100.0" />
       <Label layoutX="30.0" layoutY="79.0" prefHeight="26.0" prefWidth="190.0" text="SUPPLIER ORDERS">
          <font>
@@ -54,7 +60,7 @@
       </Text>
       <Line endX="464.0" layoutX="136.0" layoutY="137.0" startX="-100.0" />
       <TextField fx:id="searchField" layoutX="38.0" layoutY="151.0" prefHeight="34.0" prefWidth="563.0" promptText="Search supplier catalogue by product name..." />
-      <TableView fx:id="supplierTable" layoutX="38.0" layoutY="195.0" prefHeight="253.0" prefWidth="563.0">
+      <TableView fx:id="supplierTable" layoutX="38.0" layoutY="195.0" prefHeight="208.0" prefWidth="563.0">
          <columns>
             <TableColumn fx:id="colProductName" prefWidth="167.0" text="Product Name" />
             <TableColumn fx:id="colSupplier" minWidth="0.0" prefWidth="149.0" text="Supplier" />
@@ -62,7 +68,7 @@
             <TableColumn fx:id="colPackSize" prefWidth="134.0" text="Pack Size" />
          </columns>
       </TableView>
-      <Button layoutX="255.0" layoutY="458.0" mnemonicParsing="false" onAction="#handleAddToCart" prefHeight="26.0" prefWidth="126.0" style="-fx-background-color: #253558; -fx-text-fill: white; -fx-font-weight: bold;" text="➕ Add to Cart">
+      <Button layoutX="253.0" layoutY="418.0" mnemonicParsing="false" onAction="#handleAddToCart" prefHeight="26.0" prefWidth="126.0" style="-fx-background-color: #253558; -fx-text-fill: white; -fx-font-weight: bold;" text="➕ Add to Cart">
          <font>
             <Font size="14.0" />
          </font>
@@ -74,7 +80,7 @@
          </font>
       </Text>
       <Line endX="524.0" layoutX="685.0" layoutY="136.0" startX="-37.0" />
-      <TableView fx:id="cartTable" layoutX="647.0" layoutY="149.0" prefHeight="299.0" prefWidth="563.0">
+      <TableView fx:id="cartTable" layoutX="647.0" layoutY="149.0" prefHeight="252.0" prefWidth="563.0">
          <columns>
             <TableColumn fx:id="colCartProductName" prefWidth="172.0" text="Product Name" />
             <TableColumn fx:id="colCartQty" minWidth="0.0" prefWidth="111.0" text="Qty" />
@@ -82,24 +88,24 @@
             <TableColumn fx:id="colCartLineTotal" prefWidth="160.0" text="Line Total" />
          </columns>
       </TableView>
-      <Button layoutX="967.0" layoutY="458.0" mnemonicParsing="false" onAction="#handleCompleteOrder" prefHeight="30.0" prefWidth="150.0" style="-fx-background-color: #0d9488; -fx-text-fill: white; -fx-font-weight: bold;" text="💳 Complete Order">
+      <Button layoutX="966.0" layoutY="418.0" mnemonicParsing="false" onAction="#handleCompleteOrder" prefHeight="30.0" prefWidth="150.0" style="-fx-background-color: #0d9488; -fx-text-fill: white; -fx-font-weight: bold;" text="💳 Complete Order">
          <font>
             <Font size="13.0" />
          </font>
       </Button>
-      <Button layoutX="758.0" layoutY="458.0" mnemonicParsing="false" onAction="#handleRemoveSelected" prefHeight="30.0" prefWidth="157.0" style="-fx-background-color: #F44336; -fx-text-fill: white; -fx-font-weight: bold;" text="🗑 Remove Selected Item">
+      <Button layoutX="724.0" layoutY="418.0" mnemonicParsing="false" onAction="#handleRemoveSelected" prefHeight="30.0" prefWidth="190.0" style="-fx-background-color: #F44336; -fx-text-fill: white; -fx-font-weight: bold;" text="🗑 Remove Selected Item">
          <font>
             <Font size="13.0" />
          </font>
       </Button>
 
-      <Text layoutX="58.0" layoutY="542.0" strokeType="OUTSIDE" strokeWidth="0.0" text="ORDER HISTORY" wrappingWidth="241.13671875">
+      <Text layoutX="55.0" layoutY="488.0" strokeType="OUTSIDE" strokeWidth="0.0" text="ORDER HISTORY" wrappingWidth="241.13671875">
          <font>
             <Font name="System Bold" size="15.0" />
          </font>
       </Text>
-      <Line endX="458.0" layoutX="143.0" layoutY="547.0" startX="-100.0" />
-      <TableView fx:id="historyTable" layoutX="39.0" layoutY="559.0" prefHeight="253.0" prefWidth="563.0">
+      <Line endX="458.0" layoutX="140.0" layoutY="493.0" startX="-100.0" />
+      <TableView fx:id="historyTable" layoutX="36.0" layoutY="505.0" prefHeight="157.0" prefWidth="563.0">
          <columns>
             <TableColumn fx:id="colHistId" prefWidth="150.0" text="Order ID" />
             <TableColumn fx:id="colHistDate" minWidth="0.0" prefWidth="166.0" text="Date" />
@@ -108,24 +114,27 @@
          </columns>
       </TableView>
 
-      <Button layoutX="74.0" layoutY="818.0" mnemonicParsing="false" onAction="#handleCheckBalance" prefHeight="34.0" prefWidth="126.0" style="-fx-background-color: #253558; -fx-text-fill: white; -fx-font-weight: bold;" text="💰 Check Balance" />
-      <Button layoutX="264.0" layoutY="818.0" mnemonicParsing="false" onAction="#handleViewInvoice" prefHeight="34.0" prefWidth="108.0" style="-fx-background-color: #253558; -fx-text-fill: white; -fx-font-weight: bold;" text="📄 View Invoice" />
-      <Button layoutX="438.0" layoutY="818.0" mnemonicParsing="false" onAction="#handleConfirmDelivery" prefHeight="34.0" prefWidth="127.0" style="-fx-background-color: #253558; -fx-text-fill: white; -fx-font-weight: bold;" text="✔ Confirm Delivery" />
+      <Button layoutX="74.0" layoutY="677.0" mnemonicParsing="false" onAction="#handleCheckBalance" prefHeight="34.0" prefWidth="126.0" style="-fx-background-color: #253558; -fx-text-fill: white; -fx-font-weight: bold;" text="💰 Check Balance" />
+      <Button layoutX="264.0" layoutY="677.0" mnemonicParsing="false" onAction="#handleViewInvoice" prefHeight="34.0" prefWidth="108.0" style="-fx-background-color: #253558; -fx-text-fill: white; -fx-font-weight: bold;" text="📄 View Invoice" />
+      <Button layoutX="434.0" layoutY="677.0" mnemonicParsing="false" onAction="#handleConfirmDelivery" prefHeight="34.0" prefWidth="127.0" style="-fx-background-color: #253558; -fx-text-fill: white; -fx-font-weight: bold;" text="✔ Confirm Delivery" />
 
-      <Text layoutX="656.0" layoutY="541.0" strokeType="OUTSIDE" strokeWidth="0.0" text="TRACK ORDER STATUS" wrappingWidth="241.13671875">
+      <Text layoutX="653.0" layoutY="487.0" strokeType="OUTSIDE" strokeWidth="0.0" text="TRACK ORDER STATUS" wrappingWidth="241.13671875">
          <font>
             <Font name="System Bold" size="15.0" />
          </font>
       </Text>
-      <Line endX="458.0" layoutX="749.0" layoutY="547.0" startX="-100.0" />
-      <TextField fx:id="trackOrderField" layoutX="649.0" layoutY="559.0" prefHeight="34.0" prefWidth="559.0" promptText="Enter Order ID..." />
-      <Button layoutX="649.0" layoutY="604.0" mnemonicParsing="false" onAction="#handleTrackOrder" prefHeight="30.0" prefWidth="102.0" style="-fx-background-color: #253558; -fx-text-fill: white; -fx-font-weight: bold;" text="🔍 Track" />
-      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#ffffff20" height="154.0" layoutX="649.0" layoutY="658.0" stroke="#cbd5e1" strokeType="INSIDE" width="559.0" />
-      <Text layoutX="844.0" layoutY="681.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Tracking Information:">
+      <Line endX="458.0" layoutX="746.0" layoutY="493.0" startX="-100.0" />
+      <TextField fx:id="trackOrderField" layoutX="646.0" layoutY="505.0" prefHeight="34.0" prefWidth="559.0" promptText="Enter Order ID..." />
+      <Button layoutX="646.0" layoutY="550.0" mnemonicParsing="false" onAction="#handleTrackOrder" prefHeight="30.0" prefWidth="102.0" style="-fx-background-color: #253558; -fx-text-fill: white; -fx-font-weight: bold;" text="🔍 Track" />
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#ffffff20" height="117.0" layoutX="646.0" layoutY="591.0" stroke="#cbd5e1" strokeType="INSIDE" width="559.0" />
+      <Text layoutX="841.0" layoutY="614.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Tracking Information:">
          <font>
             <Font size="15.0" />
          </font>
       </Text>
-      <Label fx:id="trackingInfoDisplay" layoutX="656.0" layoutY="692.0" prefHeight="111.0" prefWidth="545.0" textAlignment="CENTER" />
+      <Label fx:id="trackingInfoDisplay" layoutX="653.0" layoutY="625.0" prefHeight="74.0" prefWidth="545.0" textAlignment="CENTER">
+         <font>
+            <Font size="11.0" />
+         </font></Label>
    </children>
 </AnchorPane>

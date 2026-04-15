@@ -35,8 +35,6 @@ public class SalesCheckoutController {
     @FXML private Label totalLabel;
     @FXML private TextField searchField;
     @FXML private TextField discountField;
-    @FXML private Label validateCreditField;
-
     @FXML private TextField accountIDField;
 
     private ObservableList<StockItem> masterData = FXCollections.observableArrayList();

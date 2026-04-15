@@ -4,7 +4,7 @@ import javafx.scene.Parent;
 import java.net.URL;
 
 public class ThemeManager {
-    // Stores the global state (Default is light mode / false)
+    //stores the global state (Default is light mode / false)
     private static boolean isDarkMode = false;
 
     public static boolean isDarkMode() {
@@ -15,7 +15,7 @@ public class ThemeManager {
         isDarkMode = darkMode;
     }
 
-    // Applies or removes the CSS based on the global state
+    //applies or removes the css based on the global state
     public static void applyTheme(Parent root) {
         try {
             URL cssUrl = ThemeManager.class.getResource("/styles/darkmode.css");
