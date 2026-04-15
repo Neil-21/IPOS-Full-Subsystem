@@ -21,9 +21,9 @@
       <Label layoutX="40.0" layoutY="78.0" text="USER MANAGEMENT"><font><Font name="System Bold" size="17.0" /></font></Label>
 
       <TextField fx:id="searchField" layoutX="37.0" layoutY="120.0" prefHeight="25.0" prefWidth="603.0" promptText="Search users...." />
-      <Button layoutX="649.0" layoutY="120.0" text="Add user" />
-      <Button layoutX="727.0" layoutY="120.0" text="Change role" />
-      <Button layoutX="820.0" layoutY="120.0" text="Delete User" />
+      <Button layoutX="649.0" layoutY="120.0" text="Add user" onAction="#handleAddUser"/>
+      <Button layoutX="727.0" layoutY="120.0" text="Change role" onAction="#handleChangeRole"/>
+      <Button layoutX="820.0" layoutY="120.0" text="Delete User" onAction="#handleDeleteUser"/>
 
       <TableView fx:id="userTable" layoutX="37.0" layoutY="164.0" prefHeight="272.0" prefWidth="862.0">
          <columns>
