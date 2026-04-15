@@ -10,6 +10,9 @@ public class Utils {
     public static void switchScene(Stage stage, String fxmlPath, String title) throws IOException {
         FXMLLoader loader = new FXMLLoader(Utils.class.getResource(fxmlPath));
         Parent root = loader.load();
+
+        ThemeManager.applyTheme(root);
+
         stage.setScene(new Scene(root));
         stage.setTitle(title);
         stage.show();
