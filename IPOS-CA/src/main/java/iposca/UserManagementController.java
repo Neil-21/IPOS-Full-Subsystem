@@ -31,7 +31,18 @@ public class UserManagementController {
     @FXML
     public void initialize() {
         if (!AuthService.isAdmin()) {
-            showError("Access denied. Admin only.");
+            Alert a = new Alert(Alert.AlertType.ERROR);
+            a.setHeaderText(null);
+            a.setContentText("Access denied. Admin only.");
+            a.showAndWait();
+            javafx.application.Platform.runLater(() -> {
+                try {
+                    Stage stage = (Stage) userTable.getScene().getWindow();
+                    Utils.switchScene(stage, "/loggedIn.fxml", "Dashboard");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
             return;
         }
         colUsername.setCellValueFactory(new PropertyValueFactory<>("username"));
