@@ -391,12 +391,18 @@ public class OrdersController {
 
     @FXML
     public void handleCheckBalance() {
-        //code for the check balance button goes here
-    }
-
-    @FXML
-    public void handleViewInvoice() {
-        //code for the view invoice button goes here
+        try {
+            double balance = saDAO.getCosymedBalance();
+            String status = saDAO.getCosymedAccountStatus();
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Account Balance");
+            alert.setHeaderText("Cosymed Ltd — InfoPharma Account");
+            alert.setContentText("Status: " + status + "\nOutstanding Balance: £" +
+                    String.format("%.2f", balance));
+            alert.showAndWait();
+        } catch (Exception e) {
+            showError("Could not retrieve balance: " + e.getMessage());
+        }
     }
 
     private void showError(String msg) {
