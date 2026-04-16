@@ -405,6 +405,33 @@ public class OrdersController {
         }
     }
 
+    @FXML
+    public void handleViewInvoice() {
+        iposca.model.Order selected = historyTable.getSelectionModel().getSelectedItem();
+        if (selected == null) {
+            showWarning("Please select an order to view its invoice.");
+            return;
+        }
+        try {
+            String[] invoice = saDAO.getInvoiceForOrder(selected.getOrderReference());
+            if (invoice == null) {
+                showWarning("No invoice found for this order.");
+                return;
+            }
+            TextArea ta = new TextArea(invoice[0]);
+            ta.setEditable(false);
+            ta.setWrapText(true);
+            ta.setPrefSize(400, 300);
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Invoice");
+            alert.setHeaderText("Invoice for Order: " + selected.getOrderReference());
+            alert.getDialogPane().setContent(ta);
+            alert.showAndWait();
+        } catch (Exception e) {
+            showError("Could not retrieve invoice: " + e.getMessage());
+        }
+    }
+
     private void showError(String msg) {
         Alert a = new Alert(Alert.AlertType.ERROR);
         a.setContentText(msg); a.showAndWait();
