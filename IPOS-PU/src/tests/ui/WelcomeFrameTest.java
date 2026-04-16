@@ -55,11 +55,12 @@ public class WelcomeFrameTest {
         WelcomeFrame frame = new WelcomeFrame(authService);
         try {
             List<JButton> buttons = UiTestUtils.findAllOfType(frame, JButton.class);
-            assertEquals(5, buttons.size());
+            assertEquals(6, buttons.size());
             assertTrue(UiTestUtils.findButtonByText(frame, "Login as Customer").isPresent());
             assertTrue(UiTestUtils.findButtonByText(frame, "Login as Admin").isPresent());
-            assertTrue(UiTestUtils.findButtonByText(frame, "Register Non-Commercial").isPresent());
+            assertTrue(UiTestUtils.findButtonByText(frame, "Register Non-Commercial Membership").isPresent());
             assertTrue(UiTestUtils.findButtonByText(frame, "Apply for Commercial Membership").isPresent());
+            assertTrue(UiTestUtils.findButtonByText(frame, "Back to Shop").isPresent());
             assertTrue(UiTestUtils.findButtonByText(frame, "Exit").isPresent());
         } finally {
             frame.dispose();

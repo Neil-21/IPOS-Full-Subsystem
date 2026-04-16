@@ -32,7 +32,7 @@ public class CatalogueServiceTest {
         List<Product> products = catalogueService.getAllProducts();
 
         assertNotNull(products);
-        assertEquals(5, products.size(), "Catalogue should return 5 products.");
+        assertEquals(14, products.size(), "Catalogue should return 14 seeded products.");
     }
 
     // Expected: returned catalogue includes the known seeded product IDs.
@@ -41,11 +41,11 @@ public class CatalogueServiceTest {
         List<Product> products = catalogueService.getAllProducts();
         Set<String> ids = products.stream().map(Product::getId).collect(Collectors.toSet());
 
-        assertTrue(ids.contains("PARA001"));
-        assertTrue(ids.contains("IBU002"));
-        assertTrue(ids.contains("VIT003"));
-        assertTrue(ids.contains("ALL004"));
-        assertTrue(ids.contains("BAND005"));
+        assertTrue(ids.contains("10000001"));
+        assertTrue(ids.contains("10000002"));
+        assertTrue(ids.contains("20000004"));
+        assertTrue(ids.contains("30000002"));
+        assertTrue(ids.contains("40000002"));
     }
 
     // Expected: each product has valid basic data (id/name/category/price/stock).
@@ -95,17 +95,17 @@ public class CatalogueServiceTest {
 
         firstCall.clear();
 
-        assertEquals(5, secondCall.size(), "Second call should not be affected by first call mutations.");
+        assertEquals(14, secondCall.size(), "Second call should not be affected by first call mutations.");
     }
 
     // Expected: reduceStock returns true and decreases stock by requested quantity.
     @Test
     void testReduceStock_ValidQuantity_ReturnsTrueAndUpdatesStock() throws SQLException {
-        setStock("PARA001", 120);
-        int before = getStock("PARA001");
+        setStock("10000001", 120);
+        int before = getStock("10000001");
 
-        boolean reduced = catalogueService.reduceStock("PARA001", 3);
-        int after = getStock("PARA001");
+        boolean reduced = catalogueService.reduceStock("10000001", 3);
+        int after = getStock("10000001");
 
         assertTrue(reduced);
         assertEquals(before - 3, after);
@@ -114,11 +114,11 @@ public class CatalogueServiceTest {
     // Expected: reduceStock returns false and leaves stock unchanged when quantity exceeds stock.
     @Test
     void testReduceStock_InsufficientStock_ReturnsFalseAndLeavesStock() throws SQLException {
-        setStock("PARA001", 2);
-        int before = getStock("PARA001");
+        setStock("10000001", 2);
+        int before = getStock("10000001");
 
-        boolean reduced = catalogueService.reduceStock("PARA001", 3);
-        int after = getStock("PARA001");
+        boolean reduced = catalogueService.reduceStock("10000001", 3);
+        int after = getStock("10000001");
 
         assertFalse(reduced);
         assertEquals(before, after);
@@ -134,11 +134,11 @@ public class CatalogueServiceTest {
     // Expected: zero-quantity reduction succeeds for an existing product and keeps stock unchanged.
     @Test
     void testReduceStock_ZeroQuantity_ReturnsTrueAndNoStockChange() throws SQLException {
-        setStock("PARA001", 120);
-        int before = getStock("PARA001");
+        setStock("10000001", 120);
+        int before = getStock("10000001");
 
-        boolean reduced = catalogueService.reduceStock("PARA001", 0);
-        int after = getStock("PARA001");
+        boolean reduced = catalogueService.reduceStock("10000001", 0);
+        int after = getStock("10000001");
 
         assertTrue(reduced);
         assertEquals(before, after);

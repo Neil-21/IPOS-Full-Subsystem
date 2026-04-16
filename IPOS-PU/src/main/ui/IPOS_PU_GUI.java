@@ -1,6 +1,7 @@
 package main.ui;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -168,8 +169,7 @@ public class IPOS_PU_GUI extends JFrame {
         panel.add(searchPanel, BorderLayout.NORTH);
 
         // Product table
-        String[] columns = {"ID", "Product", "Package", "Unit", "Pack Size", "Price (£)", "Stock"};
-//        String[] columns = {"ID", "Product", "Price (£)", "Stock", "Category"};
+        String[] columns = {"ID", "Product", "Package Type", "Unit", "Units In Pack", "Package Cost (£)", "Availability"};
         productTableModel = new DefaultTableModel(columns, 0) {
             @Override
             public boolean isCellEditable(int row, int column) { return false; }
@@ -178,6 +178,15 @@ public class IPOS_PU_GUI extends JFrame {
         productTable.setRowHeight(28);
         productTable.getColumnModel().getColumn(0).setPreferredWidth(80);
         productTable.getColumnModel().getColumn(1).setPreferredWidth(300);
+
+        // Centre-align numeric columns
+        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+
+        // Apply to all columns except ID (0) and Product (1)
+        for (int i = 0; i < productTable.getColumnCount(); i++) {
+            productTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+        }
 
         refreshProductTable(catalogue);
 
@@ -1026,5 +1035,5 @@ public class IPOS_PU_GUI extends JFrame {
                 JOptionPane.showMessageDialog(null, "Database connection failed: " + e.getMessage());
             }
         });
-    }    
+    }
 }

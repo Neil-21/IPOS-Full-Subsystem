@@ -39,16 +39,20 @@ public class DatabaseViewerTest {
         try {
             List<JComboBox> selectors = UiTestUtils.findAllOfType(frame, JComboBox.class);
             assertEquals(1, selectors.size());
-            assertEquals(9, selectors.get(0).getItemCount());
+            assertEquals(11, selectors.get(0).getItemCount());
             boolean hasProductsOption = false;
+            boolean hasPaymentsOption = false;
             for (int i = 0; i < selectors.get(0).getItemCount(); i++) {
                 Object item = selectors.get(0).getItemAt(i);
                 if ("products".equals(String.valueOf(item))) {
                     hasProductsOption = true;
-                    break;
+                }
+                if ("payments".equals(String.valueOf(item))) {
+                    hasPaymentsOption = true;
                 }
             }
             assertTrue(hasProductsOption, "Expected 'products' to be present in table selector.");
+            assertTrue(hasPaymentsOption, "Expected 'payments' to be present in table selector.");
             assertTrue(UiTestUtils.findButtonByText(frame, "Load").isPresent());
         } finally {
             frame.dispose();
