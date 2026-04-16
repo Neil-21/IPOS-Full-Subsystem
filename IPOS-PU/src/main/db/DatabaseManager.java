@@ -149,8 +149,9 @@ public class DatabaseManager {
                 CHECK (payment_status IN ('PENDING','COMPLETED','FAILED','REFUNDED'))
             );
         """;
-        
+
         String paymentInfo = """
+                CREATE VIEW IF NOT EXISTS payInfo AS
                 SELECT p.payment_id,
                        u.full_name,
                        u.email,
@@ -216,8 +217,6 @@ public class DatabaseManager {
             if (rs.getInt(1) == 0) {
                 conn.createStatement().execute("""
                     INSERT INTO users VALUES
-                    ('customer@ipos.com', 'Test Customer', 'Test123!', 'CUSTOMER', 1),
-                    ('admin@ipos.com',    'System Admin',  'Admin123!', 'ADMIN',   0),
                     ('sysdba', 'Administrator', 'masterkey', 'ADMIN', 0),
                     ('manager', 'PU-Admin', 'GetPU_it_done', 'ADMIN', 0)
                     """);

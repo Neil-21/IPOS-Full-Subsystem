@@ -75,12 +75,12 @@ public class AuthServiceTest {
         User user = authService.login(email, "OldPass1");
         assertNotNull(user);
 
-        boolean changed = authService.changePassword(user, "NewPass1");
+        boolean changed = authService.changePassword(user, "NewPassword1!");
 
         assertTrue(changed);
-        assertEquals("NewPass1", user.getPassword());
+        assertEquals("NewPassword1!", user.getPassword());
         assertFalse(user.isFirstLogin());
-        assertNotNull(authService.login(email, "NewPass1"));
+        assertNotNull(authService.login(email, "NewPassword1!"));
         assertNull(authService.login(email, "OldPass1"));
     }
 

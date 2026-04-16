@@ -107,7 +107,7 @@ public class CustomerDashboard extends JFrame {
         CatalogueService service = new CatalogueService();
         List<Product> products = service.getAllProducts();
 
-        String[] columns = {"ID", "Name", "Package", "Price (£)", "Stock"};
+        String[] columns = {"ID", "Name", "Package Type", "Price (£)", "Stock"};
         Object[][] data = new Object[products.size()][5];
 
         for (int i = 0; i < products.size(); i++) {
