@@ -1,5 +1,6 @@
 package iposca;
 
+import javafx.scene.control.Separator;
 import iposca.dao.SAIntegrationDAO;
 import iposca.model.Order;
 import iposca.model.OrderItem;
@@ -418,15 +419,101 @@ public class OrdersController {
                 showWarning("No invoice found for this order.");
                 return;
             }
-            TextArea ta = new TextArea(invoice[0]);
-            ta.setEditable(false);
-            ta.setWrapText(true);
-            ta.setPrefSize(400, 300);
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Invoice");
-            alert.setHeaderText("Invoice for Order: " + selected.getOrderReference());
-            alert.getDialogPane().setContent(ta);
-            alert.showAndWait();
+
+            javafx.scene.layout.VBox content = new javafx.scene.layout.VBox(12);
+            content.setPadding(new javafx.geometry.Insets(20));
+            content.setStyle("-fx-background-color: white;");
+
+            Label header = new Label("INVOICE");
+            header.setStyle("-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #1a1a2e;");
+
+            Label merchant = new Label("Cosymed Ltd");
+            merchant.setStyle("-fx-font-size: 14px; -fx-text-fill: #555;");
+
+            Label address = new Label("25, Bond Street, London WC1V 8LS");
+            address.setStyle("-fx-font-size: 12px; -fx-text-fill: #888;");
+
+            javafx.scene.control.Separator sep1 = new javafx.scene.control.Separator();
+
+            javafx.scene.layout.GridPane details = new javafx.scene.layout.GridPane();
+            details.setHgap(20); details.setVgap(6);
+
+            details.add(new Label("Order Reference:"), 0, 0);
+            Label refVal = new Label(selected.getOrderReference());
+            refVal.setStyle("-fx-font-weight: bold;");
+            details.add(refVal, 1, 0);
+
+            details.add(new Label("Order Date:"), 0, 1);
+            details.add(new Label(selected.getOrderDate() != null ?
+                    selected.getOrderDate().toLocalDate().toString() : "N/A"), 1, 1);
+
+            details.add(new Label("Status:"), 0, 2);
+            Label statusLabel = new Label(selected.getOrderStatus());
+            String statusColor;
+            if ("DELIVERED".equals(selected.getOrderStatus())) {
+                statusColor = "-fx-text-fill: green; -fx-font-weight: bold;";
+            } else if ("DISPATCHED".equals(selected.getOrderStatus())) {
+                statusColor = "-fx-text-fill: blue; -fx-font-weight: bold;";
+            } else if ("BEING_PROCESSED".equals(selected.getOrderStatus())) {
+                statusColor = "-fx-text-fill: orange; -fx-font-weight: bold;";
+            } else {
+                statusColor = "-fx-text-fill: purple; -fx-font-weight: bold;";
+            }
+            statusLabel.setStyle(statusColor);
+            details.add(statusLabel, 1, 2);
+
+            if (selected.getCourier() != null) {
+                details.add(new Label("Courier:"), 0, 3);
+                details.add(new Label(selected.getCourier()), 1, 3);
+            }
+            if (selected.getTrackingNumber() != null) {
+                details.add(new Label("Tracking No:"), 0, 4);
+                details.add(new Label(selected.getTrackingNumber()), 1, 4);
+            }
+
+            javafx.scene.control.Separator sep2 = new javafx.scene.control.Separator();
+
+            javafx.scene.layout.HBox totalBox = new javafx.scene.layout.HBox();
+            totalBox.setStyle("-fx-background-color: #f4f6f9; -fx-padding: 12; -fx-background-radius: 6;");
+            Label totalLabel = new Label("Total Amount:");
+            totalLabel.setStyle("-fx-font-size: 14px; -fx-font-weight: bold;");
+            javafx.scene.layout.Region spacer = new javafx.scene.layout.Region();
+            javafx.scene.layout.HBox.setHgrow(spacer, javafx.scene.layout.Priority.ALWAYS);
+            Label totalVal = new Label("£" + String.format("%.2f", selected.getTotalAmount()));
+            totalVal.setStyle("-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #1a1a2e;");
+            totalBox.getChildren().addAll(totalLabel, spacer, totalVal);
+
+            String invoiceInfo = invoice[0];
+            if (invoiceInfo.contains("Invoice ID:")) {
+                String[] lines = invoiceInfo.split("\n");
+                for (String line : lines) {
+                    if (line.startsWith("Invoice ID:")) {
+                        String[] parts = line.split(": ", 2);
+                        if (parts.length > 1) {
+                            details.add(new Label("Invoice ID:"), 0, 5);
+                            details.add(new Label(parts[1]), 1, 5);
+                        }
+                    }
+                    if (line.startsWith("Date:")) {
+                        String[] parts = line.split(": ", 2);
+                        if (parts.length > 1) {
+                            details.add(new Label("Invoice Date:"), 0, 6);
+                            details.add(new Label(parts[1]), 1, 6);
+                        }
+                    }
+                }
+            }
+
+            content.getChildren().addAll(header, merchant, address, sep1, details, sep2, totalBox);
+
+            javafx.scene.control.Dialog<Void> dialog = new javafx.scene.control.Dialog<>();
+            dialog.setTitle("Invoice — " + selected.getOrderReference());
+            dialog.getDialogPane().setContent(content);
+            dialog.getDialogPane().setPrefWidth(450);
+            dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
+            dialog.getDialogPane().setStyle("-fx-background-color: white;");
+            dialog.showAndWait();
+
         } catch (Exception e) {
             showError("Could not retrieve invoice: " + e.getMessage());
         }

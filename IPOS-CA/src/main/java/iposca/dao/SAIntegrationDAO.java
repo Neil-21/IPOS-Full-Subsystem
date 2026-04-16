@@ -181,59 +181,19 @@ public class SAIntegrationDAO {
     }
 
     public String[] getInvoiceForOrder(String orderId) throws SQLException {
-        StringBuilder invoice = new StringBuilder();
-
-        String orderSql = "SELECT order_id, order_date, total_value, status, payment_status " +
-                "FROM public.orders WHERE order_id = ? AND account_id = ?";
-
-        String itemsSql = "SELECT oi.item_id, ci.description, oi.quantity, oi.unit_cost, oi.total_cost " +
-                "FROM public.order_items oi " +
-                "JOIN public.catalogue_items ci ON oi.item_id = ci.item_id " +
-                "WHERE oi.order_id = ?";
-
-        try (Connection conn = DatabaseManager.getConnection()) {
-            try (PreparedStatement stmt = conn.prepareStatement(orderSql)) {
-                stmt.setString(1, orderId);
-                stmt.setInt(2, COSYMED_SA_ACCOUNT_ID);
-
-                ResultSet rs = stmt.executeQuery();
-                if (!rs.next()) {
-                    return null;
-                }
-
-                invoice.append("=== Cosymed Ltd Invoice ===\n\n");
-                invoice.append("Order ID: ").append(rs.getString("order_id")).append("\n");
-                invoice.append("Order Date: ").append(rs.getString("order_date")).append("\n");
-                invoice.append("Status: ").append(rs.getString("status")).append("\n");
-                invoice.append("Payment: ").append(rs.getString("payment_status")).append("\n\n");
-
-                invoice.append("Items:\n");
-                invoice.append("----------------------------------------\n");
-            }
-
-            try (PreparedStatement stmt = conn.prepareStatement(itemsSql)) {
-                stmt.setString(1, orderId);
-                ResultSet rs = stmt.executeQuery();
-
-                while (rs.next()) {
-                    invoice.append(rs.getString("description")).append("\n");
-                    invoice.append("  Qty: ").append(rs.getInt("quantity"));
-                    invoice.append(" | Unit: £").append(rs.getBigDecimal("unit_cost"));
-                    invoice.append(" | Total: £").append(rs.getBigDecimal("total_cost")).append("\n\n");
-                }
-            }
-
-            try (PreparedStatement stmt = conn.prepareStatement(orderSql)) {
-                stmt.setString(1, orderId);
-                stmt.setInt(2, COSYMED_SA_ACCOUNT_ID);
-                ResultSet rs = stmt.executeQuery();
-                if (rs.next()) {
-                    invoice.append("----------------------------------------\n");
-                    invoice.append("TOTAL: £").append(rs.getBigDecimal("total_value")).append("\n");
-                }
+        String sql = "SELECT invoice_id, invoice_date, amount_due " +
+                "FROM public.invoices WHERE order_id = ?";
+        try (PreparedStatement stmt =
+                     DatabaseManager.getConnection().prepareStatement(sql)) {
+            stmt.setString(1, orderId);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                String text = "Invoice ID: " + rs.getString("invoice_id") +
+                        "\nDate: " + rs.getString("invoice_date") +
+                        "\nAmount Due: £" + rs.getBigDecimal("amount_due").toPlainString();
+                return new String[]{ text };
             }
         }
-
-        return new String[]{ invoice.toString() };
+        return null;
     }
 }

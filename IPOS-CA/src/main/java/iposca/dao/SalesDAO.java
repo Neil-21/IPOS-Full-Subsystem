@@ -112,6 +112,17 @@ public class SalesDAO {
         return list;
     }
 
+    public Sale findByReference(String reference) throws SQLException {
+        String sql = "SELECT * FROM ca.sales WHERE sale_reference = ?";
+        try (PreparedStatement stmt =
+                     DatabaseManager.getConnection().prepareStatement(sql)) {
+            stmt.setString(1, reference);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) return mapRow(rs);
+        }
+        return null;
+    }
+
     private Sale mapRow(ResultSet rs) throws SQLException {
         Sale sale = new Sale();
         sale.setSaleID(rs.getInt("sale_id"));

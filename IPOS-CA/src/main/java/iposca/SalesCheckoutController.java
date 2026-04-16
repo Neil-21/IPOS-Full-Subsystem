@@ -235,6 +235,27 @@ public class SalesCheckoutController {
             success.setContentText("Sale recorded successfully.\nReference: " + ref);
             success.showAndWait();
 
+            Alert invoicePrompt = new Alert(Alert.AlertType.CONFIRMATION);
+            invoicePrompt.setTitle("Print Invoice");
+            invoicePrompt.setContentText("Would you like to view the invoice?");
+            invoicePrompt.showAndWait().ifPresent(r -> {
+                if (r == ButtonType.OK) {
+                    try {
+                        String invoice = SalesService.generateInvoiceText(ref);
+                        TextArea ta = new TextArea(invoice);
+                        ta.setEditable(false);
+                        ta.setPrefSize(400, 500);
+                        Alert invoiceView = new Alert(Alert.AlertType.INFORMATION);
+                        invoiceView.setTitle("Invoice");
+                        invoiceView.setHeaderText("Sale: " + ref);
+                        invoiceView.getDialogPane().setContent(ta);
+                        invoiceView.showAndWait();
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            });
+
         } catch (Exception e) {
             e.printStackTrace();
             showError("Could not complete sale: " + e.getMessage());

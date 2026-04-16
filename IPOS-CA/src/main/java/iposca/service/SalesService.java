@@ -75,6 +75,43 @@ public class SalesService {
         return sale.getSaleReference();
     }
 
+    public static String generateInvoiceText(String saleReference) throws SQLException {
+        Sale sale = salesDAO.findByReference(saleReference);
+        if (sale == null) return "Invoice not found.";
+
+        List<SaleItem> items = salesDAO.getItemsForSale(sale.getSaleID());
+        StringBuilder sb = new StringBuilder();
+        sb.append("COSYMED LTD\n");
+        sb.append("25, Bond Street, London WC1V 8LS\n");
+        sb.append("Phone: 0207 321 8001\n");
+        sb.append("─".repeat(40)).append("\n");
+        sb.append("RETAIL INVOICE\n");
+        sb.append("Reference: ").append(sale.getSaleReference()).append("\n");
+        sb.append("Date: ").append(sale.getSaleDate().toLocalDate()).append("\n");
+        if (sale.getAccountID() != null)
+            sb.append("Account: ").append(sale.getAccountID()).append("\n");
+        sb.append("─".repeat(40)).append("\n");
+        sb.append(String.format("%-25s %-5s %-10s%n", "Item", "Qty", "Total"));
+        sb.append("─".repeat(40)).append("\n");
+
+        for (SaleItem item : items) {
+            sb.append(String.format("%-25s %-5d £%-10.2f%n",
+                    item.getProductID(),
+                    item.getQuantity(),
+                    item.getLineTotal()));
+        }
+
+        sb.append("─".repeat(40)).append("\n");
+        sb.append(String.format("%-30s £%.2f%n", "Subtotal:", sale.getSubtotal()));
+        if (sale.getDiscountAmount().compareTo(java.math.BigDecimal.ZERO) > 0)
+            sb.append(String.format("%-30s £%.2f%n",
+                    "Discount:", sale.getDiscountAmount()));
+        sb.append(String.format("%-30s £%.2f%n", "VAT:", sale.getVatAmount()));
+        sb.append(String.format("%-30s £%.2f%n", "TOTAL DUE:", sale.getTotalAmount()));
+        sb.append("\nThank you for your custom.");
+        return sb.toString();
+    }
+
     private static String generateReference() {
         return "SALE-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd-HHmmss"));
     }
