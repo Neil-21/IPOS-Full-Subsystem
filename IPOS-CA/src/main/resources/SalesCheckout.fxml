@@ -99,7 +99,7 @@
             </TableView>
             <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#f0f4f8" height="144.0" layoutX="684.0" layoutY="465.0" stroke="#cbd5e1" strokeType="INSIDE" width="244.0" />
             <Line endX="415.0" layoutX="784.0" layoutY="622.0" startX="-100.0" />
-            <Button layoutX="684.0" layoutY="636.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="516.0" style="-fx-background-color: #0d9488; -fx-text-fill: white; -fx-font-weight: bold;" text="💳 Complete Sale">
+            <Button layoutX="684.0" layoutY="636.0" prefHeight="34.0" prefWidth="516.0" style="-fx-background-color: #0d9488; -fx-text-fill: white; -fx-font-weight: bold;" text="💳 Complete Sale" onMouseClicked="#moveToPayment">
                <font>
                   <Font name="System Bold" size="15.0" />
                </font>
